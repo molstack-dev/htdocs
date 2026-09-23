@@ -572,129 +572,214 @@
 
         loadJsPDF(async ({ jsPDF }) => {
             const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            const W = 297, H = 210;
 
-            // Fondo limpio y borde
-            doc.setFillColor(255, 255, 255);
-            doc.rect(0, 0, 297, 210, 'F');
-            doc.setDrawColor(220, 220, 220);
-            doc.setLineWidth(0.5);
-            doc.rect(10, 10, 277, 190);
-
-            // Intentar cargar icono y firma desde rutas relativas
-            function loadImageAsDataUrl(url) {
+            // ── Cargar firma ──────────────────────────────────────────────────
+            function loadImg(url) {
                 return fetch(url, { cache: 'no-cache' })
-                    .then(res => res.ok ? res.blob() : null)
-                    .then(blob => blob ? new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => resolve(reader.result);
-                        reader.readAsDataURL(blob);
+                    .then(r => r.ok ? r.blob() : null)
+                    .then(b => b ? new Promise(resolve => {
+                        const fr = new FileReader();
+                        fr.onloadend = () => resolve(fr.result);
+                        fr.readAsDataURL(b);
                     }) : null)
                     .catch(() => null);
             }
-
-            const logoPath = new URL('../../img/icono_negro.png', window.location.href).href;
             const signaturePath = new URL('../../img/firma.png', window.location.href).href;
-            const logoData = await loadImageAsDataUrl(logoPath);
-            const signatureData = await loadImageAsDataUrl(signaturePath);
+            const signatureData = await loadImg(signaturePath);
 
-            if (logoData) {
-                try { doc.addImage(logoData, 'PNG', 14, 14, 38, 26); } catch (e) {}
-            }
+            // ── Fondo marfil ──────────────────────────────────────────────────
+            doc.setFillColor(250, 247, 240);
+            doc.rect(0, 0, W, H, 'F');
 
-            // Título
+            // ── Doble borde dorado (ocupa toda la página) ─────────────────────
+            doc.setDrawColor(180, 140, 60);
+            doc.setLineWidth(1.2);
+            doc.rect(8, 8, W - 16, H - 16);
+            doc.setDrawColor(210, 175, 100);
+            doc.setLineWidth(0.4);
+            doc.rect(11, 11, W - 22, H - 22);
+
+            // ── Ornamentos en esquinas ────────────────────────────────────────
+            doc.setDrawColor(180, 140, 60);
+            doc.setLineWidth(1);
+            [[8, 8], [W - 8, 8], [8, H - 8], [W - 8, H - 8]].forEach(([cx, cy]) => {
+                const s = 6, dx = cx < W / 2 ? 1 : -1, dy = cy < H / 2 ? 1 : -1;
+                doc.line(cx, cy, cx + dx * s, cy);
+                doc.line(cx, cy, cx, cy + dy * s);
+            });
+
+            // ── Marca de agua tenue ───────────────────────────────────────────
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(38);
-            doc.setTextColor(40, 40, 40);
-            doc.text('CERTIFICADO', 148.5, 56, { align: 'center' });
+            doc.setFontSize(72);
+            doc.setTextColor(230, 225, 215);
+            doc.text('CHEF JONATHAN', W / 2, H / 2 + 8, { align: 'center' });
 
-            doc.setFontSize(14);
-            doc.setTextColor(90, 90, 90);
-            doc.text('DE FINALIZACIÓN', 148.5, 68, { align: 'center' });
+            // ── Título principal ──────────────────────────────────────────────
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(60, 38, 10);
+            doc.text('CERTIFICADO', W / 2, 36, { align: 'center' });
 
-            // Texto principal
+            // Subtítulo dinámico según tipo de servicio
+            const svcType = (cert.service_type || 'curso').toLowerCase();
+            const subtitleMap = {
+                curso:    'DE CURSO Y PARTICIPACIÓN',
+                asesoria: 'DE ASESORÍA PERSONALIZADA',
+                evento:   'DE ASISTENCIA Y PARTICIPACIÓN'
+            };
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
-            doc.setTextColor(70, 70, 70);
-            const statement = [
-                'Por medio del presente se certifica que la persona',
-            ];
-            doc.text(statement, 148.5, 88, { align: 'center', maxWidth: 240 });
+            doc.setTextColor(140, 100, 40);
+            doc.text(subtitleMap[svcType] || 'DE PARTICIPACIÓN', W / 2, 45, { align: 'center' });
 
-            // Nombre del titular
-            const studentName = (cert.holder_name || cert.user_full_name || cert.user_name || '').toUpperCase();
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(24);
-            doc.setTextColor(30, 30, 30);
-            doc.text(studentName || 'TITULAR', 148.5, 102, { align: 'center' });
+            // ── Líneas decorativas bajo título ────────────────────────────────
+            doc.setDrawColor(180, 140, 60);
+            doc.setLineWidth(0.6);
+            doc.line(70, 49, W - 70, 49);
+            doc.setLineWidth(0.2);
+            doc.line(85, 51, W - 85, 51);
 
-            // Documento
-            const docType = cert.holder_id_type || cert.user_id_type || 'Documento';
-            const docNumber = cert.holder_id_number || cert.user_id_number || 'N/A';
+            // ── Texto de otorgamiento ─────────────────────────────────────────
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(11);
-            doc.setTextColor(80, 80, 80);
-            doc.text(`${docType} ${docNumber}`, 148.5, 110, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setTextColor(80, 60, 30);
+            doc.text('La presente institución certifica que:', W / 2, 62, { align: 'center' });
 
-            // Nombre del servicio
-            const renderedServiceTitle = serviceTitle(cert).replace(/_/g, ' ').toUpperCase();
+            // ── Nombre del titular ────────────────────────────────────────────
+            const holderName = cert.holder_name || cert.user_full_name || cert.user_name || 'Participante';
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-            doc.setTextColor(80, 80, 80);
-            doc.text(renderedServiceTitle, 148.5, 124, { align: 'center' });
+            doc.setFontSize(22);
+            doc.setTextColor(40, 26, 10);
+            doc.text(holderName.toUpperCase(), W / 2, 75, { align: 'center' });
 
-            const duration = getCertificateDuration(cert);
-            if (duration) {
+            // ── Documento de identidad ────────────────────────────────────────
+            const docType   = cert.holder_id_type || cert.user_id_type || '';
+            const docNumber = cert.holder_id_number || cert.user_id_number || '';
+            if (docType && docNumber) {
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                doc.text(`Duración: ${duration}`, 148.5, 131, { align: 'center' });
+                doc.setFontSize(9);
+                doc.setTextColor(110, 80, 40);
+                doc.text(`${docType}: ${docNumber}`, W / 2, 82, { align: 'center' });
             }
 
+            // ── Texto de participación (dinámico por tipo) ────────────────────
+            const participationTextMap = {
+                curso:    'ha completado satisfactoriamente el curso',
+                asesoria: 'ha participado en la asesoría personalizada',
+                evento:   'ha asistido y participado en el evento'
+            };
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(11);
-            doc.setTextColor(90, 90, 90);
-            doc.text(`Ha completado satisfactoriamente el programa y ha demostrado dedicación, disciplina y excelencia en su formación.`, 148.5, 138, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setTextColor(80, 60, 30);
+            doc.text(participationTextMap[svcType] || 'ha completado satisfactoriamente', W / 2, 92, { align: 'center' });
 
-            doc.text(`Fecha de finalización: ${formatDate(cert.completion_date || cert.issue_date)}`, 148.5, 146, { align: 'center' });
-
-            doc.setFontSize(9);
-            doc.setTextColor(120, 120, 120);
-            doc.text(`Certificado N° ${cert.certificate_number || ''}`, 148.5, 154, { align: 'center' });
-
-            const sigY = 168;
-            const sigWidth = 100;
-            const sigHeight = 36;
-            const centroX = 150;
-            if (signatureData) {
-                try {
-                    doc.addImage(signatureData, 'PNG', 100, sigY - 16, sigWidth, sigHeight);
-                } catch (e) {
-                    doc.setFontSize(10);
-                    doc.text('____________________________________', centroX, sigY + 4, { align: 'center' });
-                }
-            } else {
-                doc.setFontSize(10);
-                doc.text('____________________________________', centroX, sigY + 4, { align: 'center' });
-            }
-            doc.setLineWidth(0.5);
-            doc.setDrawColor(150, 150, 150);
-            doc.line(centroX - 50, 171, centroX + 50, 171);
-            doc.setFontSize(11);
-            doc.setTextColor(40, 40, 40);
-            doc.text('Chef Jonathan Buitrago', centroX, sigY + 10, { align: 'center' });
-            doc.setFontSize(9);
-            doc.setTextColor(110, 110, 110);
+            // ── Nombre del servicio ───────────────────────────────────────────
+            const svcTitle = serviceTitle(cert).replace(/_/g, ' ');
             doc.setFont('helvetica', 'bold');
-            doc.text('Director Académico', centroX, sigY + 16, { align: 'center' });
+            doc.setFontSize(16);
+            doc.setTextColor(130, 80, 10);
+            const titleLines = doc.splitTextToSize(svcTitle, 200);
+            doc.text(titleLines, W / 2, 102, { align: 'center' });
+            let cursorY = 102 + (titleLines.length - 1) * 7 + 8;
 
-            doc.setFontSize(8);
-            doc.setTextColor(130, 130, 130);
-            doc.text('Chef Jonathan Buitrago - Cursos y Asesorías de Pastelería', 148.5, 196, { align: 'center' });
+            // ── Campos extra según tipo ───────────────────────────────────────
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(110, 80, 40);
 
-            const studentPart = (cert.holder_name || cert.user_full_name || cert.user_name || 'estudiante').replace(/\s+/g, ' ').replace(/[^a-zA-Z0-9 _-]/g, '').trim();
-            const servicePart = serviceTitle(cert).replace(/\s+/g, ' ').replace(/[^a-zA-Z0-9 _-]/g, '').trim();
-            const fileName = `Certificado ${studentPart} ${servicePart}.pdf`;
-            doc.save(fileName);
+            if (svcType === 'curso') {
+                const duration = getCertificateDuration(cert);
+                if (duration) {
+                    doc.text(`Duración: ${duration}`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 7;
+                }
+            } else if (svcType === 'asesoria') {
+                const advisory_type = cert.advisory_type || '';
+                const advisory_mode = cert.advisory_mode || '';
+                if (advisory_type) {
+                    const typeLabel = advisory_type === 'asesoria_Individual' ? 'Individual' :
+                                     advisory_type === 'asesoria_grupal'     ? 'Grupal'     :
+                                     advisory_type.replace(/_/g, ' ');
+                    doc.text(`Tipo: ${typeLabel}`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 6;
+                }
+                if (advisory_mode) {
+                    doc.text(`Modalidad: ${advisory_mode.replace(/_/g, ' ')}`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 6;
+                }
+                const numPersons = parseInt(cert.num_persons, 10) || 0;
+                if (numPersons > 1) {
+                    doc.text(`Grupo de ${numPersons} participantes`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 6;
+                }
+            } else if (svcType === 'evento') {
+                const eventDate = cert.event_date || cert.advisory_date || '';
+                if (eventDate) {
+                    doc.text(`Fecha del evento: ${formatDate(eventDate)}`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 6;
+                }
+                const numPersonsEvento = parseInt(cert.num_persons, 10) || 0;
+                if (numPersonsEvento > 1) {
+                    doc.text(`Grupo de ${numPersonsEvento} participantes`, W / 2, cursorY, { align: 'center' });
+                    cursorY += 6;
+                }
+            }
+
+            // ── Texto de dedicación ───────────────────────────────────────────
+            cursorY += 4;
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(8.5);
+            doc.setTextColor(100, 72, 30);
+            const dedicationLines = doc.splitTextToSize(
+                'Ha demostrado dedicación, disciplina y excelencia durante toda su formación.',
+                220
+            );
+            doc.text(dedicationLines, W / 2, cursorY, { align: 'center' });
+
+            // ── Fecha y número de certificado ─────────────────────────────────
+            const dataY = H - 26;
+            const completionDate = formatDate(cert.completion_date || cert.issue_date);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(90, 65, 25);
+            doc.text('Fecha de culminación:', 20, dataY);
+            doc.setFont('helvetica', 'bold');
+            doc.text(completionDate, 20, dataY + 6);
+
+            const certNum = cert.certificate_number || '';
+            if (certNum) {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.5);
+                doc.setTextColor(120, 90, 40);
+                doc.text('N.° Certificado:', W - 20, dataY, { align: 'right' });
+                doc.setFont('helvetica', 'bold');
+                doc.text(certNum, W - 20, dataY + 6, { align: 'right' });
+            }
+
+            // ── Firma ─────────────────────────────────────────────────────────
+            const signX     = W / 2;
+            const signLineY = H - 30;
+            if (signatureData) {
+                try { doc.addImage(signatureData, 'PNG', signX - 50, signLineY - 22, 100, 36); }
+                catch (e) { /* fallo silencioso */ }
+            }
+            doc.setDrawColor(160, 120, 50);
+            doc.setLineWidth(0.6);
+            doc.line(signX - 30, signLineY, signX + 30, signLineY);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(60, 38, 10);
+            doc.text('Chef Jonathan Buitrago', signX, signLineY + 5.5, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            doc.setTextColor(120, 90, 40);
+            doc.text('Director — Escuela de Pastelería', signX, signLineY + 10, { align: 'center' });
+
+            // ── Descargar ─────────────────────────────────────────────────────
+            const holderPart = holderName.replace(/[^a-zA-Z0-9\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_').slice(0, 30);
+            const svcPart    = svcTitle.replace(/[^a-zA-Z0-9\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_').slice(0, 30);
+            doc.save(`Certificado_${holderPart}_${svcPart}.pdf`);
         });
     };
 

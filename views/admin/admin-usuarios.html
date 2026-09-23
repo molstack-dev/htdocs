@@ -184,7 +184,7 @@
                     <div class="mb-4">
                                 <label for="user-email-search" class="block text-sm font-medium text-gray-300 mb-2">Buscar por Email</label>
                                 <div class="flex gap-3 items-center">
-                                    <input id="user-email-search" type="email" placeholder="correo@ejemplo.com" class="flex-1 px-3 py-2 bg-gray-800 rounded border border-gray-600 focus:outline-none focus:border-amber-500">
+                                    <input id="user-email-search" type="email" placeholder="correo@ejemplo.com" class="flex-1 px-3 py-2 bg-gray-800 rounded border border-gray-600 focus:outline-none focus:">
                                     <button type="button" id="user-email-search-clear" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 text-sm">Limpiar</button>
                                 </div>
                             </div>
@@ -221,11 +221,11 @@
                 <input type="hidden" id="edit-user-id">
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Nombre</label>
-                    <input type="text" id="edit-user-name" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:border-amber-500" required>
+                    <input type="text" id="edit-user-name" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:" required>
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Email</label>
-                    <input type="email" id="edit-user-email" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:border-amber-500" required>
+                    <input type="email" id="edit-user-email" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:" required>
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Tipo de Documento</label>

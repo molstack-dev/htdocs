@@ -1,3 +1,57 @@
+// Conecta el frontend con la API PHP tanto en la raíz del dominio como dentro
+// de una subcarpeta de XAMPP. La base se calcula desde este archivo, no desde
+// el nombre del proyecto, para que también funcione si se renombra la carpeta.
+(function() {
+    function getProjectBase() {
+        var script = document.currentScript;
+
+        // document.currentScript no está disponible en algunos navegadores
+        // cuando el código se ejecuta desde un bundle, por eso se deja un
+        // respaldo que localiza el script global por su ruta.
+        if (!script || !script.src) {
+            var scripts = document.getElementsByTagName('script');
+            for (var i = scripts.length - 1; i >= 0; i--) {
+                if (/\/assets\/script\.js(?:\?.*)?$/.test(scripts[i].src || '')) {
+                    script = scripts[i];
+                    break;
+                }
+            }
+        }
+
+        if (!script || !script.src) return '';
+
+        var scriptPath = new URL(script.src, window.location.origin).pathname;
+        return scriptPath.replace(/\/assets\/script\.js$/, '');
+    }
+
+    window.resolveApiUrl = function(url) {
+        if (typeof url === 'string') {
+            var base = getProjectBase();
+            if (base && url.startsWith('/backend/api/')) {
+                return base + url;
+            }
+        }
+        return url;
+    };
+
+    if (typeof window !== 'undefined' && window.fetch) {
+        var _originalFetch = window.fetch;
+        window.fetch = function(resource, init) {
+            if (typeof resource === 'string') {
+                resource = window.resolveApiUrl(resource);
+            } else if (resource && resource.url) {
+                var base = getProjectBase();
+                var apiRoot = window.location.origin + '/backend/api/';
+                if (base && resource.url.startsWith(apiRoot)) {
+                    var newUrl = window.location.origin + base + resource.url.slice(window.location.origin.length);
+                    resource = new Request(newUrl, resource);
+                }
+            }
+            return _originalFetch.call(this, resource, init);
+        };
+    }
+})();
+
 // Funciones globales - disponibles inmediatamente
 window.showToast = function(message, type = 'success') {
     var container = document.getElementById('toast-container');
@@ -18,6 +72,40 @@ window.showToast = function(message, type = 'success') {
         setTimeout(function() { toast.remove(); }, 300);
     }, 3000);
 };
+
+// Diagnóstico no intrusivo: si la API o MySQL fallan, el usuario recibe un
+// mensaje útil y la consola conserva el detalle técnico para soporte.
+window.checkDatabaseConnection = async function() {
+    try {
+        var response = await fetch('/backend/api/health.php', {
+            credentials: 'same-origin',
+            cache: 'no-store'
+        });
+        var result = await response.json().catch(function() { return {}; });
+
+        if (!response.ok || !result.success) {
+            var reason = result.code === 'SCHEMA_INCOMPLETE'
+                ? 'Faltan tablas en la base de datos.'
+                : 'No se pudo conectar con la base de datos.';
+            console.error('Diagnóstico API:', result);
+            window.showToast(reason + ' Revisa la configuración del servidor.', 'error');
+            return false;
+        }
+
+        console.info('API y base de datos conectadas.', result);
+        return true;
+    } catch (error) {
+        console.error('No fue posible acceder a la API:', error);
+        window.showToast('No se pudo contactar el servidor. Verifica Apache y MySQL.', 'error');
+        return false;
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.checkDatabaseConnection, { once: true });
+} else {
+    window.checkDatabaseConnection();
+}
 
 window.loadMyAdvisories = async function() {
     var tbody = document.getElementById('solicitudes-tbody');
@@ -782,7 +870,11 @@ document.addEventListener('DOMContentLoaded', function() {
     reveal(); // Initial check
 
     // Manejar envío del formulario de registro
-    document.addEventListener('DOMContentLoaded', function() {
+    // Nota: se usa una IIFE en lugar de un DOMContentLoaded anidado, porque
+    // registrar un listener DOMContentLoaded dentro de otro callback que ya
+    // se está ejecutando hace que el evento nunca vuelva a dispararse y el
+    // handler del formulario de registro nunca se adjunte.
+    (function() {
         const registerForm = document.getElementById('register-form');
         if (registerForm) {
             // Add event listener for document type select to show/hide custom field
@@ -889,9 +981,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             registerCustomDocInput.value = '';
                         }
                         
-                        // Redirigir después de un breve delay
+                        // Redirigir después de un breve delay (el login está en registro.html)
                         setTimeout(() => {
-                            window.location.href = 'login.html';
+                            window.location.href = 'registro.html';
                         }, 2000);
                     } else {
                         showAlert(result.message || 'Error en el registro', 'error');
@@ -902,7 +994,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-    });
+    })();
     
     // Manejar envío del formulario de login
     const loginForm = document.getElementById('login-form');
@@ -1304,6 +1396,7 @@ window.setupPaginationControls = function(tableName) {
             { href: 'admin-inscripciones.html', label: 'Inscripciones' },
             { href: 'admin-servicios.html', label: 'Servicios' },
             { href: 'admin-reembolsos.html', label: 'Reembolsos' },
+            { href: 'admin-certificados.html', label: 'Certificados' },
         ];
 
         function applyTooltips(container){

@@ -89,10 +89,10 @@ Deberías ver un mensaje ✓ de inicialización. Ese script ya crea tablas, usua
 ## Credenciales de prueba
 - **Admin**
   - Email: `admin@chefjonathan.com`
-  - Password: `admin123`
+  - Password: `Admin@2026`
 - **Usuario**
   - Email: `edwinalex8712@gmail.com`
-  - Password: `12345`
+  - Password: `User@2026`
 
 ---
 

@@ -1,11 +1,11 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
+require_once '../cors.php';
+header('Content-Type: application/json; charset=utf-8');
 require_once '../config.php';
 
 try {
-    $stmt = $pdo->query("SELECT id, name, email, phone, address, created_at FROM clients ORDER BY created_at DESC");
+    // "clients" fue reemplazada por users con rol user.
+    $stmt = $pdo->query("SELECT id, name, email, phone, NULL AS address, created_at FROM users WHERE role = 'user' ORDER BY created_at DESC");
     $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo json_encode([

@@ -1,31 +1,12 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+require_once '../cors.php';
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../config.php';
-
-try {
-    $stmt = $pdo->query("
-        SELECT 
-            v.id,
-            c.name as client_name,
-            v.date,
-            v.notes
-        FROM visits v
-        JOIN clients c ON v.client_id = c.id
-        ORDER BY v.date DESC
-    ");
-    $visits = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    echo json_encode([
-        'success' => true,
-        'data' => $visits
-    ]);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Error al obtener visitas: ' . $e->getMessage()
-    ]);
-}
+// El modelo actual no registra visitas. Se conserva una respuesta estable para
+// instalaciones que aún consultan esta ruta, sin depender de una tabla obsoleta.
+echo json_encode([
+    'success' => true,
+    'data' => [],
+    'message' => 'El registro de visitas ya no forma parte del sistema actual.',
+]);
 ?>

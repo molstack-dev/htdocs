@@ -1,8 +1,10 @@
 <?php
-// refund-create.php - helper opcional (no usado por UI actual)
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 require_once '../cors.php';
-require_once '../config.php';
-?>
+header('Content-Type: application/json; charset=utf-8');
 
+http_response_code(410);
+echo json_encode([
+    'success' => false,
+    'message' => 'Esta ruta fue reemplazada por /backend/api/refund-request.php.',
+]);
+?>

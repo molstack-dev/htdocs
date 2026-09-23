@@ -1,21 +1,22 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
+require_once '../cors.php';
+header('Content-Type: application/json; charset=utf-8');
 require_once '../config.php';
 
 try {
+    // Las ventas actuales son inscripciones pagadas; sales ya no existe.
     $stmt = $pdo->query("
         SELECT 
-            s.id,
-            c.name as client_name,
-            co.title as course_title,
-            s.amount,
-            s.date
-        FROM sales s
-        JOIN clients c ON s.client_id = c.id
-        JOIN courses co ON s.course_id = co.id
-        ORDER BY s.date DESC
+            r.id,
+            u.name AS client_name,
+            co.title AS course_title,
+            COALESCE(r.course_price, co.price) AS amount,
+            r.registration_date AS date
+        FROM registrations r
+        JOIN users u ON r.client_id = u.id
+        JOIN courses co ON r.course_id = co.id
+        WHERE r.payment_status = 'paid'
+        ORDER BY r.registration_date DESC
     ");
     $sales = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
