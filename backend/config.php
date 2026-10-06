@@ -13,11 +13,11 @@ define('APP_ENV_LOCAL', is_local_environment());
 function get_db_config(): array {
     if (APP_ENV_LOCAL) {
         return [
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => 3306,
             'user' => 'root',
             'pass' => '',
-            'name' => 'chef_jonathan',
+            'name' => 'if0_43089123_chef_jonathan',
             'charset' => 'utf8mb4',
         ];
     }

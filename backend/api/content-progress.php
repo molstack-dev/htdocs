@@ -187,18 +187,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($progress['total_items'] > 0 && $progress['completed_count'] === $progress['total_items']) {
             $stmtUpdate = $pdo->prepare('UPDATE registrations SET status = "completed" WHERE client_id = ? AND course_id = ? AND payment_status = "paid" AND status != "completed"');
             $stmtUpdate->execute([$auth['user_id'], $courseId]);
-            
+
             // Verificar si la actualización fue efectiva
             if ($stmtUpdate->rowCount() > 0) {
                 // Obtener el ID de la inscripción para emitir el certificado
                 $regStmt = $pdo->prepare('SELECT id FROM registrations WHERE client_id = ? AND course_id = ?');
                 $regStmt->execute([$auth['user_id'], $courseId]);
                 $registration = $regStmt->fetch();
-                
+
                 if ($registration) {
                     // Emitir certificado automáticamente
                     $certificateIssued = emitCertificate($auth['user_id'], $courseId, $registration['id']);
-                    
+
                     if (!$certificateIssued) {
                         error_log('Error al emitir certificado para el usuario ' . $auth['user_id'] . ' y curso ' . $courseId);
                     }
