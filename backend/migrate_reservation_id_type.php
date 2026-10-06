@@ -1,7 +1,7 @@
 <?php
 // migrate_reservation_id_type.php - Migrar la columna id_type en la tabla reservations para usar ENUM consistente
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 try {
     // Verificar si la tabla reservations existe

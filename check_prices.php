@@ -1,5 +1,5 @@
 <?php
-require_once 'backend/config.php';
+require_once __DIR__ . '/backend/config.php';
 
 $stmt = $pdo->query("SELECT id, title, price, category FROM courses ORDER BY id");
 $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);

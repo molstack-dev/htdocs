@@ -164,7 +164,7 @@
                         }) : null;
                     }).catch(function() { return null; });
             }
-            var signaturePath = new URL('../../img/firma.png', window.location.href).href;
+            var signaturePath = new URL('/img/firma.png', window.location.href).href;
             var signatureData = await loadImg(signaturePath);
 
             // ── Fondo marfil ──────────────────────────────────────────────────

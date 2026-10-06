@@ -29,12 +29,12 @@ echo "   ✓ Las extensiones MySQL ya están configuradas en Apache\n";
 echo "   ✓ Pasos:\n";
 echo "     1. Abrir XAMPP Control Panel\n";
 echo "     2. Hacer click en 'Start' para Apache\n";
-echo "     3. Ir a: http://localhost/Chef-Jonathan-Buitrago/\n";
-echo "     4. Ejecutar: http://localhost/Chef-Jonathan-Buitrago/backend/init_db.php\n";
-echo "     5. Probar login: http://localhost/Chef-Jonathan-Buitrago/views/registro.html\n\n";
+echo "     3. Ir a: http://localhost/\n";
+echo "     4. Ejecutar: http://localhost/backend/init_db.php\n";
+echo "     5. Probar login: http://localhost/views/registro.html\n\n";
 
 echo "OPCIÓN B: Usar el servidor PHP Built-in (para desarrollo)\n";
-echo "   php -S localhost:8000 -t C:\\xampp\\htdocs\\Chef-Jonathan-Buitrago\n";
+echo "   php -S localhost:8000 -t .\n";
 echo "   ⚠️ Pero necesitarías MySQLi/PDO funcionando (mismo problema)\n\n";
 
 echo "OPCIÓN C: Instalar extensiones en PHP CLI\n";

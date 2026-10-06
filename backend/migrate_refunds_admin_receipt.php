@@ -1,6 +1,6 @@
 <?php
 // migrate_refunds_admin_receipt.php - Migrar el campo admin_receipt a LONGTEXT
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 echo "Iniciando migración de campo admin_receipt a LONGTEXT...\n";
 

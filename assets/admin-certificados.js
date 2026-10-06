@@ -585,7 +585,7 @@
                     }) : null)
                     .catch(() => null);
             }
-            const signaturePath = new URL('../../img/firma.png', window.location.href).href;
+            const signaturePath = new URL('/img/firma.png', window.location.href).href;
             const signatureData = await loadImg(signaturePath);
 
             // ── Fondo marfil ──────────────────────────────────────────────────

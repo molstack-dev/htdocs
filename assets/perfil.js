@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadUserData() {
 
         try {
-            const response = await fetch('../../backend/api/users.php?action=get_current_user', { credentials: 'include' });
+            const response = await fetch('/backend/api/users.php?action=get_current_user', { credentials: 'include' });
             if (!response.ok) throw new Error('Error al obtener usuario');
 
             const data = await response.json();
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         try {
-                            const response = await fetch('../../backend/api/profile-update.php', {
+                            const response = await fetch('/backend/api/profile-update.php', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 credentials: 'include',
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('../../backend/api/password-change.php', {
+                const response = await fetch('/backend/api/password-change.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('../../backend/api/update-security.php', {
+                const response = await fetch('/backend/api/update-security.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Debug (visible en consola)
                 console.log('Guardando notificaciones:', { notify_email, notify_whatsapp });
 
-                const response = await fetch('../../backend/api/update-notifications.php', {
+                const response = await fetch('/backend/api/update-notifications.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmDeleteBtn.textContent = 'Eliminando...';
 
             try {
-                const response = await fetch('../../backend/api/usuarios.php', {
+                const response = await fetch('/backend/api/usuarios.php', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     showAlert('Tu cuenta ha sido eliminada exitosamente.', 'success');
                     setTimeout(() => {
-        window.location.href = '../../index.html';
+                    window.location.href = '/?i=1';
                     // Cerrar sesión para limpiar sesión local
                     try { if (typeof logout === 'function') logout(); } catch (e) {}
                     }, 2000);

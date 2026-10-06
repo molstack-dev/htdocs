@@ -1,7 +1,7 @@
 <?php
-require_once '../cors.php';
+require_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 try {
     // Las ventas actuales son inscripciones pagadas; sales ya no existe.

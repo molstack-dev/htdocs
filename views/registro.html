@@ -6,9 +6,9 @@
         <meta http-equiv="content-language" content="es">
         <title>Chef Jonathan Buitrago - Registro</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link href="../assets/style.css" rel="stylesheet">
+        <link href="/assets/style.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../img/icono.png">
+        <link rel="icon" type="image/png" href="/img/icono.png">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     </head>
     <body>
@@ -19,7 +19,7 @@
         <header class="shadow-lg rounded-lg backdrop-blur">
             <div class="container mx-auto px-6 py-5 flex justify-between items-center">
                 <h1 class="text-2xl parisienne-font bg-gradient-to-r from-purple-900 to-purple-600 bg-clip-text">
-                    <a href="../index.html">Chef Jonathan Buitrago</a>
+                    <a href="../?i=1">Chef Jonathan Buitrago</a>
                 </h1>
                 <nav class="hidden md:flex items-center space-x-10">
                     <a href="informacion.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://w3.org" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-chef-custom" viewBox="0 0 16 16"><path d="M6.5 4.5c-.8 0-1.8.5-2.2 1.3C3 6 2.5 7 2.7 8c.2.8.8 1.4 1.6 1.5.1 0 .2.1.2.2.3.8 1.2 1.3 2.1 1.1h2.8c.9.2 1.8-.3 2.1-1.1 0-.1.1-.2.2-.2.8-.1 1.4-.7 1.6-1.5.2-1-.3-2-1.6-2.2-.4-.8-1.4-1.3-2.2-1.3-.7 0-1.3.3-1.7.8-.4-.5-1-.8-1.8-.8z" /><path d="M4.5 10.7v2c1.2.5 2.3.6 3.5.6s2.3-.1 3.5-.6v-2" /></svg></a>
@@ -72,7 +72,7 @@
                             </div>
                             <!-- Imagen debajo del login -->
                             <div class="product-card p-1 rounded-xl bg-gray-800 bg-opacity-90 flex-1">
-                                <img src="../img/chef_jonathan_buitrago_post_5_7_2019_14_55_082081519712904515788.jpg" alt="Imagen debajo del inicio de sesión" class="w-full h-full object-cover rounded-lg">
+                                <img src="/img/chef_jonathan_buitrago_post_5_7_2019_14_55_082081519712904515788.jpg" alt="Imagen debajo del inicio de sesión" class="w-full h-full object-cover rounded-lg">
                             </div>
                         </div>
                         <div class="product-card p-8 rounded-xl bg-gray-800 bg-opacity-90">
@@ -80,7 +80,7 @@
                             <form id="register-form">
                                 <div class="mb-4">
                                     <label for="register-name" class="block text-gray-300 mb-2">Nombre de Usuario / Alias</label>
-                                    <input type="text" id="register-name" class="w-full" onkeypress="return /^[a-zA-ZÁéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)" required>
+                                    <input type="text" id="register-name" class="w-full" required>
                                 </div>
                                 <div class="mb-4">
                                     <label for="register-fullname" class="block text-gray-300 mb-2">Nombre Completo</label>
@@ -100,7 +100,7 @@
                                     </div>
                                     <div>
                                         <label for="register-id-number" class="block text-gray-300 mb-2">Número de Documento</label>
-                                        <input type="text" id="register-id-number" class="w-full" required>
+                                        <input type="number" id="register-id-number" inputmode="numeric" class="w-full py-3" required>
                                     </div>
                                     <div id="register-custom-doc-container" class="md:col-span-2" style="display: none;">
                                         <label for="register-custom-doc" class="block text-gray-300 mb-2">Especifique el tipo de documento</label>
@@ -209,7 +209,7 @@
         <footer class="border-t border-white-700 py-4">
             <div class="w-full mx-auto max-w-screen-xl p-2 flex flex-col sm:flex-row items-center justify-between">
                 <span class="text-xs text-gray-400">
-                    © 2025 <a href="../index.html" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
+                    © 2025 <a href="../?i=1" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
                 </span>
                 <ul class="flex space-x-4 items-center mt-2 sm:mt-0 text-xs">
                     <!--Instagram-->
@@ -293,6 +293,6 @@
             document.body.style.overflow = '';
         }
         </script>
-        <script src="../assets/script.js"></script>
+        <script src="/assets/script.js"></script>
     </body>
 </html>

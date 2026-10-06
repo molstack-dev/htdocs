@@ -34,6 +34,11 @@
         return url;
     };
 
+    window.resolveProjectUrl = function(url) {
+        var base = getProjectBase();
+        return (base || '') + url;
+    };
+
     if (typeof window !== 'undefined' && window.fetch) {
         var _originalFetch = window.fetch;
         window.fetch = function(resource, init) {
@@ -983,7 +988,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Redirigir después de un breve delay (el login está en registro.html)
                         setTimeout(() => {
-                            window.location.href = 'registro.html';
+                            window.location.href = '/views/registro.html';
                         }, 2000);
                     } else {
                         showAlert(result.message || 'Error en el registro', 'error');
@@ -1030,7 +1035,7 @@ const response = await fetch('/backend/api/login.php', {
                             var after = sessionStorage.getItem('redirectAfterLogin');
                             sessionStorage.removeItem('redirectAfterLogin');
                             if (after === 'catalogo') {
-                                window.location.href = 'catalogo.html';
+                                window.location.href = '/views/catalogo.html';
                                 return;
                             }
                         } catch (e) {}
@@ -1054,7 +1059,7 @@ const response = await fetch('/backend/api/login.php', {
             userNameElement.textContent = user.name;
         } else {
             // Si no hay usuario, redirigir al login
-            window.location.href = '../registro.html';
+            window.location.href = '/views/registro.html';
         }
     }
     
@@ -1145,10 +1150,30 @@ function setCurrentUser(user) {
 
 // Función para cerrar sesión
 function logout() {
-    localStorage.removeItem('currentUser');
-    // Detectar si estamos en subdirectorio (admin/user)
-    const isSubdir = window.location.pathname.includes('/views/');
-    window.location.href = isSubdir ? '../../index.html' : './index.html';
+    try {
+        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('redirectAfterLogin');
+    } catch (error) {
+        console.error('No se pudo limpiar el almacenamiento local:', error);
+    }
+
+    try {
+        fetch('/backend/api/logout.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            keepalive: true
+        }).catch(function(error) {
+            console.error('No se pudo cerrar la sesión en el servidor:', error);
+        });
+    } catch (error) {
+        console.error('No se pudo cerrar la sesión en el servidor:', error);
+    }
+
+    var homeUrl = typeof window.resolveProjectUrl === 'function'
+        ? window.resolveProjectUrl('/?i=1')
+        : '/?i=1';
+    window.location.replace(homeUrl);
 }
 
 // Función para redirigir según rol del usuario
@@ -1161,7 +1186,7 @@ function redirectToDashboard() {
         if (!user) {
             // Guardar intención y redirigir al login/registro
             try { sessionStorage.setItem('redirectAfterLogin', 'catalogo'); } catch (e) {}
-            window.location.href = 'views/registro.html';
+            window.location.href = '/views/registro.html';
             return;
         }
         var modal = document.getElementById('inscriptionModal');
@@ -1188,13 +1213,13 @@ function redirectToDashboard() {
     if (user) {
         switch(user.role) {
             case 'admin':
-                window.location.href = 'admin/admin.html';
+                window.location.href = '/views/admin/admin.html';
                 break;
             case 'user':
-                window.location.href = 'user/user.html';
+                window.location.href = '/views/user/user.html';
                 break;
             default:
-                window.location.href = '../index.html';
+                window.location.href = '/?i=1';
         }
     }
 }

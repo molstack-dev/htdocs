@@ -114,14 +114,6 @@ window.agendarJsLoaded = true;
         };
 
         // ===== HANDLER DEL FORMULARIO DE AGENDAR =====
-        const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-        if (currentUser) {
-            const nameFieldWrapper = document.getElementById('advisory-name')?.closest('div');
-            const emailFieldWrapper = document.getElementById('advisory-email')?.closest('div');
-            if (nameFieldWrapper) nameFieldWrapper.style.display = 'none';
-            if (emailFieldWrapper) emailFieldWrapper.style.display = 'none';
-        }
-
         const advisoryForm = document.getElementById('advisory-form');
         if (advisoryForm) {
             advisoryForm.addEventListener('submit', function(e) {
@@ -136,10 +128,7 @@ window.agendarJsLoaded = true;
                     return;
                 }
 
-                let name, email, price, date, time, notes;
-
-                name = document.getElementById('advisory-name')?.value || '';
-                email = document.getElementById('advisory-email')?.value || '';
+                let price, date, time, notes;
 
                 let advisoryType = null, advisoryService = null, advisoryMode = null, eventName = null;
                 let numPersons = 1;
@@ -182,15 +171,7 @@ window.agendarJsLoaded = true;
                     return;
                 }
 
-                var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-                if (currentUser) {
-                    name = currentUser.name || name;
-                    email = currentUser.email || email;
-                }
-
                 window.pendingFormData = {
-                    name: name,
-                    email: email,
                     phone: null,
                     service: advisoryService,
                     price: price,
@@ -734,7 +715,6 @@ loadCoursesGrid().catch(console.error);
                     return;
                 }
 
-                var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
                 var payload = {
                     phone: null,
                     service: formData.service,
@@ -750,11 +730,6 @@ loadCoursesGrid().catch(console.error);
                     eventName: formData.eventName,
                     payment_method: paymentMethod  // Agregar el método de pago al payload
                 };
-
-                if (!currentUser) {
-                    payload.name = formData.name;
-                    payload.email = formData.email;
-                }
 
                 fetch('/backend/api/advisory-registration.php', {
                     method: 'POST',

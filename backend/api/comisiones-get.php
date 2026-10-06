@@ -1,5 +1,5 @@
 <?php
-require_once '../cors.php';
+require_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
 
 // Los vendedores y comisiones se retiraron del modelo de negocio actual.

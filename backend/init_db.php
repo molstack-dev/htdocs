@@ -1,7 +1,7 @@
 <?php
 // init_db.php - Inicializar la base de datos MySQL con todas las tablas
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 try {
     // Este inicializador es seguro de ejecutar más de una vez: crea y migra

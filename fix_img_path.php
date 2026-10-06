@@ -1,11 +1,7 @@
 <?php
-require_once 'backend/config.php';
+require_once __DIR__ . '/backend/config.php';
 
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-if ($conn->connect_error) {
-    die("Error: " . $conn->connect_error);
-}
-
+$conn = $mysqli;
 $conn->query("UPDATE courses SET image = CONCAT('../', image) WHERE image LIKE 'img/%'");
 
 echo "Rutas corregidas a '../img/...'\n";

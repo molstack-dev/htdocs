@@ -1,12 +1,8 @@
 <?php
-require_once 'backend/config.php';
+require_once __DIR__ . '/backend/config.php';
 
+$conn = $mysqli;
 echo "Conectando a $db_name...<br>";
-
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-if ($conn->connect_error) {
-    die("Error: " . $conn->connect_error);
-}
 
 // Corregir rutas de imagen
 $conn->query("UPDATE courses SET image = REPLACE(image, 'img/', '../img/') WHERE image LIKE 'img/%'");

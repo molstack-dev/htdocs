@@ -1,5 +1,5 @@
 <?php
-require 'backend/config.php';
+require __DIR__ . '/backend/config.php';
 $tables = ['users', 'courses', 'registrations', 'clients'];
 
 foreach ($tables as $table) {

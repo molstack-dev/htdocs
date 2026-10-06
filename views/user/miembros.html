@@ -6,21 +6,21 @@
         <meta http-equiv="content-language" content="es">
         <title>Chef Jonathan Buitrago - Área de Miembros</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link href="../../assets/style.css" rel="stylesheet">
+        <link href="/assets/style.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../../img/icono.png">
+        <link rel="icon" type="image/png" href="/img/icono.png">
     </head>
     <body>
         <!-- Header -->
         <header class="shadow-lg rounded-lg backdrop-blur">
             <div class="container mx-auto px-6 py-5 flex justify-between items-center">
                 <h1 class="text-2xl parisienne-font bg-gradient-to-r from-purple-900 to-purple-600 bg-clip-text">
-                    <a href="../../index.html">Chef Jonathan Buitrago</a>
+                    <a href="../../?i=1">Chef Jonathan Buitrago</a>
                 </h1>
                 <nav class="hidden md:flex items-center space-x-10">
-                    <a href="../../views/informacion.html" class="hover:text-purple-500 transition-colors">Información</a>
-                    <a href="../../views/catalogo.html" class="hover:text-purple-500 transition-colors">Catálogo</a>
-                    <a href="../../index.html" class="hover:text-purple-500 transition-colors">Cerrar Sesión</a>
+                    <a href="/views/informacion.html" class="hover:text-purple-500 transition-colors">Información</a>
+                    <a href="/views/catalogo.html" class="hover:text-purple-500 transition-colors">Catálogo</a>
+                    <a href="javascript:void(0)" onclick="logout()" class="hover:text-purple-500 transition-colors">Cerrar Sesión</a>
                 </nav>
                 <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,9 +29,9 @@
                 </button>
             </div>
             <div id="mobile-menu" class="hidden rounded-lg md:hidden ">
-                <a href="../../views/informacion.html" class="block py-3 px-4 hover:bg-gray-700 transition-all">Información</a>
-                <a href="../../views/catalogo.html" class="block py-3 px-4 hover:bg-gray-700 transition-all">Catálogo</a>
-                <a href="../../index.html" class="block py-3 px-4 hover:bg-gray-700 transition-all">Cerrar Sesión</a>
+                <a href="/views/informacion.html" class="block py-3 px-4 hover:bg-gray-700 transition-all">Información</a>
+                <a href="/views/catalogo.html" class="block py-3 px-4 hover:bg-gray-700 transition-all">Catálogo</a>
+                <a href="javascript:void(0)" onclick="logout()" class="block py-3 px-4 hover:bg-gray-700 transition-all">Cerrar Sesión</a>
             </div>
         </header>
         <script>
@@ -44,7 +44,7 @@
         </script>
     
         <!-- Área de Miembros -->
-        <section class="pt-24 py-12 bg-gray-900 min-h-screen" style="background-image: url('../../img/chef_jonathan_buitrago_post_10_5_2019_12_28_342040858511489146865.jpg'); background-size: cover; background-position: center;">
+        <section class="pt-24 py-12 bg-gray-900 min-h-screen" style="background-image: url('/img/chef_jonathan_buitrago_post_10_5_2019_12_28_342040858511489146865.jpg'); background-size: cover; background-position: center;">
             <div class="container mx-auto px-6 pt-12">
                 <h3 class="text-4xl font-bold text-center mb-12 text-white">Área de Miembros</h3>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -66,7 +66,7 @@
                                 <a href="#" class="block py-3 px-4 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">Agendar Asesoría</a>
                                 <a href="#" class="block py-3 px-4 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">Certificados</a>
                                 <a href="#" class="block py-3 px-4 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">Mi Perfil</a>
-                                <a href="../../index.html" class="block py-3 px-4 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">Cerrar Sesión</a>
+                                <a href="javascript:void(0)" onclick="logout()" class="block py-3 px-4 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">Cerrar Sesión</a>
                             </nav>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
         <footer class="border-t border-white-700 py-4">
             <div class="w-full mx-auto max-w-screen-xl p-2 flex flex-col sm:flex-row items-center justify-between">
                 <span class="text-xs text-gray-400">
-                    © 2025 <a href="../../index.html" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
+                    © 2025 <a href="../../?i=1" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
                 </span>
                 <ul class="flex space-x-4 items-center mt-2 sm:mt-0 text-xs">
                     <!--Instagram-->
@@ -165,6 +165,6 @@
             </div>
         </footer>
     
-        <script src="../../assets/script.js"></script>
+        <script src="/assets/script.js"></script>
     </body>
 </html>

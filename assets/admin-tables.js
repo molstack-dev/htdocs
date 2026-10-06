@@ -497,13 +497,12 @@ function setupCourseTableDelegation() {
 // Funciones para gestión de usuarios
 function setupCreateUserForm() {
     const createForm = document.getElementById('create-user-form');
-    const nameInput = document.getElementById('user-name');
+    const fullNameInput = document.getElementById('user-fullname');
     if (!createForm || createForm._bound) return;
 
-    // Filtrar caracteres no alfabéticos en tiempo real
-    if (nameInput) {
-        nameInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    if (fullNameInput) {
+        fullNameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^\p{L}\s]/gu, '');
         });
     }
 
@@ -537,9 +536,8 @@ function setupCreateUserForm() {
             return;
         }
 
-        // Validar que el nombre solo tenga letras
-        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name)) {
-            showToast('El nombre solo puede contener letras y espacios.', 'error');
+        if (!/^[\p{L}\s]+$/u.test(full_name)) {
+            showToast('El nombre completo solo puede contener letras y espacios.', 'error');
             return;
         }
 
@@ -602,16 +600,7 @@ function setupEditModal() {
     const editModal = document.getElementById('edit-user-modal');
     const editForm = document.getElementById('edit-user-form');
     const cancelEditBtn = document.getElementById('cancel-edit-user');
-    const editNameInput = document.getElementById('edit-user-name');
-
     if (!editModal || !editForm || !cancelEditBtn || editModal._bound) return;
-
-    // Filtrar caracteres no alfabéticos en tiempo real
-    if (editNameInput) {
-        editNameInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
-        });
-    }
 
     cancelEditBtn.addEventListener('click', () => {
         editModal.classList.add('hidden');
@@ -641,12 +630,6 @@ function setupEditModal() {
 
         if (!name || !email) {
             showToast('Completa nombre y email para actualizar el usuario.', 'error');
-            return;
-        }
-
-        // Validar que el nombre solo tenga letras
-        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name)) {
-            showToast('El nombre solo puede contener letras y espacios.', 'error');
             return;
         }
 

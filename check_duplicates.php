@@ -1,5 +1,5 @@
 <?php
-require_once 'backend/config.php';
+require_once __DIR__ . '/backend/config.php';
 
 echo "Verificando duplicados en la base de datos...\n";
 

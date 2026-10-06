@@ -304,7 +304,7 @@ async function loadMyCourses() {
     if (!container) return;
 
     try {
-        const response = await fetch('../../backend/api/inscripciones.php');
+        const response = await fetch('/backend/api/inscripciones.php');
         const result = await response.json();
 
         if (result.success && result.data && result.data.length > 0) {
@@ -412,7 +412,7 @@ async function loadCourseLessons(courseId, contentDiv, forceReload) {
     lessonsContainer.innerHTML = '<p class="text-gray-400 text-center py-4">Cargando contenido...</p>';
 
     try {
-        var response = await fetch('../../backend/api/course-content-get.php?course_id=' + courseId, { credentials: 'include' });
+        var response = await fetch('/backend/api/course-content-get.php?course_id=' + courseId, { credentials: 'include' });
         var result = await response.json();
 
         if (result.success && result.content && result.content.length > 0) {
@@ -462,7 +462,7 @@ async function loadCourseLessons(courseId, contentDiv, forceReload) {
 }
 
 async function refreshCourseProgress(courseId) {
-    var response = await fetch('../../backend/api/course-content-get.php?course_id=' + courseId, { credentials: 'include' });
+    var response = await fetch('/backend/api/course-content-get.php?course_id=' + courseId, { credentials: 'include' });
     var result = await response.json();
 
     if (result.success) {

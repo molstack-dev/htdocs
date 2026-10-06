@@ -1,7 +1,7 @@
 <?php
-require_once 'backend/config.php';
+require_once __DIR__ . '/backend/config.php';
 
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+$conn = $mysqli;
 $conn->query("UPDATE courses SET image = REPLACE(image, '../img/', '../../img/') WHERE image LIKE '../img/%'");
 
 $result = $conn->query("SELECT id, title, image FROM courses");

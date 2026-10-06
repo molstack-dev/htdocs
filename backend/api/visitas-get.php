@@ -1,5 +1,5 @@
 <?php
-require_once '../cors.php';
+require_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
 
 // El modelo actual no registra visitas. Se conserva una respuesta estable para

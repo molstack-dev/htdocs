@@ -1,7 +1,7 @@
 <?php
-require_once '../cors.php';
+require_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json');
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

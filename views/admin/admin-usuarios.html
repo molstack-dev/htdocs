@@ -6,10 +6,10 @@
     <meta http-equiv="content-language" content="es">
     <title>Gestión de Usuarios</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="../../assets/style.css" rel="stylesheet">
+    <link href="/assets/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" type="image/png" href="../../img/icono.png">
+    <link rel="icon" type="image/png" href="/img/icono.png">
 </head>
 <body class="bg-gray-900 text-white">
     <!-- Contenedor de notificaciones -->
@@ -19,7 +19,7 @@
     <header class="shadow-lg rounded-lg backdrop-blur">
         <div class="container mx-auto px-6 py-5 flex justify-between items-center">
             <h1 class="text-2xl parisienne-font bg-gradient-to-r from-purple-900 to-purple-600 bg-clip-text">
-                <a href="../../index.html">Chef Jonathan Buitrago</a>
+                <a href="../../?i=1">Chef Jonathan Buitrago</a>
             </h1>
             <nav class="hidden md:flex items-center space-x-10">
                 <a href="admin.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/></svg></a>
@@ -62,9 +62,9 @@
                     <div class="product-card p-6 rounded-lg">
                         <h5 class="text-lg font-semibold mb-4">Crear Usuario</h5>
                         <form id="create-user-form">
-                            <input id="user-name" name="name" type="text" placeholder="Alias / Username" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
+                            <input id="user-name" name="name" type="text" placeholder="Alias / Username" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
 
-                            <input id="user-fullname" name="full_name" type="text" placeholder="Nombre Completo" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
+                            <input id="user-fullname" name="full_name" type="text" placeholder="Nombre Completo" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
 
                             <div class="grid grid-cols-2 gap-2 mb-2">
                                 <select id="user-id-type" class="w-full py-4 bg-gray-700 text-gray-300 border border-gray-600" required>
@@ -75,7 +75,7 @@
                                     <option value="Pasaporte">Pasaporte</option>
                                     <option value="Otro">Otro</option>
                                 </select>
-                                <input id="user-id-number" name="id_number" type="text" placeholder="Número de Documento" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
+                                <input id="user-id-number" name="id_number" type="number" placeholder="Número de Documento" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
                                 <div id="custom-doc-container" class="mb-2" style="display: none;">
                                     <input id="user-custom-doc" name="custom_doc_type" type="text" placeholder="Especifique el tipo de documento" class="w-full p-2 bg-gray-700 rounded">
                                 </div>
@@ -86,7 +86,7 @@
                                 <option value="user">Usuario</option>
                                 <option value="admin">Administrador</option>
                             </select>
-                            <input id="user-phone" name="phone" type="text" placeholder="Teléfono" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
+                            <input id="user-phone" name="phone" type="number" placeholder="Teléfono" class="w-full mb-2 p-2 bg-gray-700 rounded" required>
                             <div class="relative mb-2">
                                 <input id="user-password" name="password" type="password" placeholder="Contraseña" class="w-full p-2 bg-gray-700 rounded pr-8" required>
                                 <span class="password-toggle absolute inset-y-0 right-0 flex items-center pr-2" onclick="togglePassword('user-password')">
@@ -221,7 +221,7 @@
                 <input type="hidden" id="edit-user-id">
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Nombre</label>
-                    <input type="text" id="edit-user-name" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:" required>
+                    <input type="text" id="edit-user-name" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:" required>
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Email</label>
@@ -244,7 +244,7 @@
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Número de Documento</label>
-                    <input type="text" id="edit-user-id-number" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600">
+                    <input type="number" id="edit-user-id-number" class="w-full px-3 py-2 bg-gray-700 rounded text-white border border-gray-600">
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Rol</label>
@@ -304,7 +304,7 @@
     <footer class="border-t border-white-700 py-4">
         <div class="w-full mx-auto max-w-screen-xl p-2 flex flex-col sm:flex-row items-center justify-between">
             <span class="text-xs text-gray-400">
-                © 2025 <a href="../../index.html" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
+                © 2025 <a href="../../?i=1" class="text-white parisienne-font hover:text-purple-500">Chef Jonathan Buitrago</a>. Todos los derechos reservados.
             </span>
             <ul class="flex space-x-4 items-center mt-2 sm:mt-0 text-xs">
                 <!--Instagram-->
@@ -319,5 +319,5 @@
         </div>
     </footer>
 
-    <script src="../../assets/script.js"></script>
-    <script src="../../assets/admin-tables.js"></script>
+    <script src="/assets/script.js"></script>
+    <script src="/assets/admin-tables.js"></script>

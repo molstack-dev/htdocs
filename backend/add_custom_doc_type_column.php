@@ -1,7 +1,7 @@
 <?php
 // add_custom_doc_type_column.php - Add custom_doc_type column to users table
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 try {
     // Check if custom_doc_type column exists

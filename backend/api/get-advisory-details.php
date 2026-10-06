@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 // Incluir la configuración de la base de datos
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 // Iniciar sesión para acceder a las variables de sesión
 session_start();

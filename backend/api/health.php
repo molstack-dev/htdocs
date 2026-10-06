@@ -1,7 +1,7 @@
 <?php
-require_once '../cors.php';
+require_once __DIR__ . '/../cors.php';
 header('Content-Type: application/json; charset=utf-8');
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 // Estado público mínimo para diagnosticar la instalación desde el frontend.
 // No expone credenciales, consultas ni datos de usuarios.

@@ -4,7 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 // Iniciar sesión si no está iniciada
 if (session_status() === PHP_SESSION_NONE) {
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Crear usuario
         if ($data['action'] === 'create_user') {
-            $required = ['name', 'email', 'password', 'security_question', 'security_answer', 'phone', 'notify_email', 'notify_whatsapp'];
+            $required = ['name', 'full_name', 'email', 'password', 'security_question', 'security_answer', 'phone', 'notify_email', 'notify_whatsapp'];
             foreach ($required as $f) {
                 if (!isset($data[$f])) {
                     http_response_code(400);
@@ -148,9 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            if ($name === '' || $email === '' || $password === '' || $security_question === '' || $security_answer === '' || $phoneRaw === '' || $role === '') {
+            if ($name === '' || $full_name === '' || $email === '' || $password === '' || $security_question === '' || $security_answer === '' || $phoneRaw === '' || $role === '') {
                 http_response_code(400);
                 echo json_encode(['success' => false, 'message' => 'Todos los campos son requeridos']);
+                exit;
+            }
+
+            if (!preg_match('/^[\p{L}\s]+$/u', $full_name)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'El nombre completo solo puede contener letras y espacios']);
                 exit;
             }
 

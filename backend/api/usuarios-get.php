@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 try {
     $stmt = $pdo->query("SELECT id, name, full_name, id_type, id_number, email, role, created_at FROM users ORDER BY created_at DESC");

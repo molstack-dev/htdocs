@@ -2,7 +2,7 @@
 // migrate_course_content.php - Ejecutar migración de course_content
 // Solo necesita ejecutarse una vez
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

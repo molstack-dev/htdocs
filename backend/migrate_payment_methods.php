@@ -1,7 +1,7 @@
 <?php
 // migrate_payment_methods.php - Script para migrar la columna de métodos de pago a tablas existentes
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 try {
     // Verificar si la columna payment_method ya existe en la tabla registrations
