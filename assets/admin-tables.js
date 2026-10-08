@@ -158,32 +158,21 @@ async function loadInscriptions() {
     }
 }
 
-let allCourses = [];
-
-function syncEditEventDateVisibility(existing = null) {
-    const select = document.getElementById('edit-service-category');
-    const container = document.getElementById('edit-event-date-container');
-    const input = document.getElementById('edit-event_date');
-
-    if (!select || !container || !input) return;
-
-    const isEventos = String(select.value).toLowerCase() === 'eventos';
-    container.style.display = isEventos ? 'block' : 'none';
-    input.required = isEventos;
-
-    if (!isEventos) {
-        input.value = '';
-        return;
-    }
-
+function syncEditEventDateVisibility(existing) {
+    const input = document.getElementById('event_date');
+    const timeInput = document.getElementById('event_time');
     if (existing && existing.event_date) {
         input.value = String(existing.event_date);
     } else if (!input.value) {
         input.value = '';
     }
+    if (existing && existing.event_time) timeInput.value = String(existing.event_time).slice(0, 5);
 }
 
 window.syncEditEventDateVisibility = syncEditEventDateVisibility;
+
+// Variable global para almacenar todos los cursos
+let allCourses = [];
 
 async function loadCourses() {
     try {
@@ -193,36 +182,87 @@ async function loadCourses() {
         if (result.success && result.data.length > 0) {
             allCourses = result.data.map((course) => ({
                 ...course,
-                event_date: course.event_date ?? course.eventDate ?? ''
+                event_date: course.event_date ?? course.eventDate ?? '',
+                event_time: course.event_time ?? ''
             }));
-            const tbody = document.getElementById('courses-tbody');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-            result.data.forEach((course) => {
-                const row = document.createElement('tr');
-                row.className = 'border-b border-gray-800';
-                row.innerHTML = `
-                    <td class="py-3 text-gray-400 text-sm">${String(course.id).padStart(3, '0')}</td>
-                    <td class="py-3">
-                        ${course.image ? '<img src="' + course.image + '" class="w-16 h-16 object-cover rounded">' : '<div class="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-gray-500 text-xs">Sin img</div>'}
-                    </td>
-                    <td class="py-3 text-white text-sm">${course.title}</td>
-                    <td class="py-3 text-gray-400 text-sm capitalize">${course.category || 'cursos'}</td>
-                    <td class="py-3 text-amber-500 font-semibold text-sm">$${Number(course.price).toLocaleString('es-ES')}</td>
-                    <td class="py-3">
-                        <div class="flex space-x-1">
-                            <button type="button" class="edit-course-btn px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 text-xs" data-course-id="${course.id}">Modificar</button>
-                            <button type="button" class="delete-course-btn px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs" data-course-id="${course.id}">Eliminar</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+            renderCoursesTable(allCourses); // Renderizar todos los cursos inicialmente
         }
     } catch (error) {
         console.error('Error cargando cursos:', error);
     }
+}
+
+// Función para renderizar la tabla de cursos
+function renderCoursesTable(coursesToRender) {
+    const tbody = document.getElementById('courses-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    coursesToRender.forEach((course) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-800';
+        
+        // Verificar si es un evento con fecha vencida
+        let expiredIndicator = '';
+        if ((course.category === 'eventos' || course.category === 'evento') && course.event_date) {
+            const now = new Date();
+            const eventDateTime = new Date(course.event_date + ' ' + (course.event_time || '00:00'));
+            if (eventDateTime < now) {
+                expiredIndicator = '<span class="inline-block w-3 h-3 rounded-full bg-red-500 mr-2" title="Evento con fecha vencida"></span>';
+            }
+        }
+        
+        row.innerHTML = `
+            <td class="py-3 text-gray-400 text-sm">${String(course.id).padStart(3, '0')}</td>
+            <td class="py-3">
+                ${course.image ? '<img src="' + course.image + '" class="w-16 h-16 object-cover rounded">' : '<div class="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-gray-500 text-xs">Sin img</div>'}
+            </td>
+            <td class="py-3 text-white text-sm">${expiredIndicator}${course.title}</td>
+            <td class="py-3 text-gray-400 text-sm capitalize">${course.category || 'cursos'}</td>
+            <td class="py-3 text-amber-500 font-semibold text-sm">$${Number(course.price).toLocaleString('es-ES')}</td>
+            <td class="py-3">
+                <div class="flex space-x-1">
+                    <button type="button" class="edit-course-btn px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 text-xs" data-course-id="${course.id}">Modificar</button>
+                    <button type="button" class="delete-course-btn px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs" data-course-id="${course.id}">Eliminar</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Función para buscar cursos
+function searchCourses(query) {
+    const searchTerm = query.toLowerCase().trim();
+    
+    if (!searchTerm) {
+        // Si no hay término de búsqueda, mostrar todos los cursos
+        renderCoursesTable(allCourses);
+        return;
+    }
+    
+    // Filtrar cursos por ID, título, categoría o precio
+    const filteredCourses = allCourses.filter(course => {
+        const idMatch = String(course.id).includes(searchTerm);
+        const titleMatch = course.title.toLowerCase().includes(searchTerm);
+        const categoryMatch = (course.category || '').toLowerCase().includes(searchTerm);
+        const priceMatch = String(course.price).includes(searchTerm);
+        
+        return idMatch || titleMatch || categoryMatch || priceMatch;
+    });
+    
+    renderCoursesTable(filteredCourses);
+}
+
+// Configurar el buscador
+function setupCoursesSearch() {
+    const searchInput = document.getElementById('courses-search');
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', function() {
+        const query = this.value;
+        searchCourses(query);
+    });
 }
 
 // === CREAR CURSO ===
@@ -242,6 +282,8 @@ function setupCreateCourseForm() {
         const imageInput = document.getElementById('course-image');
         const eventDateInput = document.getElementById('event_date');
         const event_date = eventDateInput ? eventDateInput.value : '';
+        const eventTimeInput = document.getElementById('event_time');
+        const event_time = eventTimeInput ? eventTimeInput.value : '';
 
         if (!title) {
             showToast('El título es requerido', 'error');
@@ -249,6 +291,10 @@ function setupCreateCourseForm() {
         }
         if (!price || parseFloat(price) <= 0) {
             showToast('El precio debe ser mayor a 0', 'error');
+            return;
+        }
+        if (category === 'eventos' && (!event_date || !event_time)) {
+            showToast('La fecha y hora del evento son requeridas', 'error');
             return;
         }
 
@@ -261,6 +307,7 @@ function setupCreateCourseForm() {
         formData.append('price', price);
         if (category === 'eventos' && event_date) {
             formData.append('event_date', event_date);
+            formData.append('event_time', event_time);
         }
         if (imageInput.files[0]) {
             formData.append('image', imageInput.files[0]);
@@ -294,11 +341,34 @@ function openEditCourseModal(course) {
     document.getElementById('edit-service-description').value = course.description || '';
     document.getElementById('edit-service-description-detail').value = course.description_detail || '';
     document.getElementById('edit-service-category').value = course.category || 'cursos';
+    
+    // Actualizar la visibilidad del contenedor de fecha y hora antes de asignar los valores
+    const categoryValue = course.category || 'cursos';
+    const isEventos = String(categoryValue).toLowerCase() === 'eventos';
+    const container = document.getElementById('edit-event-date-container');
+    if (container) {
+        container.style.display = isEventos ? 'block' : 'none';
+    }
+    
     document.getElementById('edit-service-duration').value = course.duration || '';
     document.getElementById('edit-service-price').value = course.price;
-    document.getElementById('edit-event_date').value = course.event_date || course.eventDate || '';
+    
+    // Manejar posibles variantes de nombre de propiedad para fecha
+    const eventDateValue = course.event_date || course.eventDate || '';
+    document.getElementById('edit-event_date').value = eventDateValue;
+    
+    // Manejar posibles variantes de nombre de propiedad para hora y formatearla
+    let eventTimeValue = course.event_time || course.eventTime || '';
+    if (eventTimeValue && typeof eventTimeValue === 'string') {
+        // Tomar solo HH:MM si viene en formato HH:MM:SS
+        eventTimeValue = eventTimeValue.slice(0, 5);
+    }
+    document.getElementById('edit-event_time').value = eventTimeValue;
 
-    syncEditEventDateVisibility(course);
+    // Llamar a la función de sincronización para asegurar la visibilidad correcta
+    if (typeof syncEditEventDateVisibility === 'function') {
+        syncEditEventDateVisibility();
+    }
 
     // Guardar imagen actual en campo oculto
     let currentImageInput = document.getElementById('edit-service-current-image');
@@ -360,10 +430,12 @@ function setupEditCourseModal() {
         const imageInput = document.getElementById('edit-service-image');
         const eventDateInput = document.getElementById('edit-event_date');
         const eventDate = eventDateInput ? eventDateInput.value : '';
+        const eventTimeInput = document.getElementById('edit-event_time');
+        const eventTime = eventTimeInput ? eventTimeInput.value : '';
 
         if (!title) { showToast('El título es requerido', 'error'); return; }
         if (!price || parseFloat(price) <= 0) { showToast('El precio debe ser mayor a 0', 'error'); return; }
-        if (category === 'eventos' && !eventDate) { showToast('La fecha del evento es requerida', 'error'); return; }
+        if (category === 'eventos' && (!eventDate || !eventTime)) { showToast('La fecha y hora del evento son requeridas', 'error'); return; }
 
         const formData = new FormData();
         formData.append('id', id);
@@ -382,6 +454,7 @@ function setupEditCourseModal() {
 
         if (category === 'eventos' && eventDate) {
             formData.append('event_date', eventDate);
+            formData.append('event_time', eventTime);
         }
 
         if (imageInput.files[0]) {
@@ -1624,6 +1697,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupUserTableDelegation();
     } else if (page.includes('admin-servicios')) {
         loadCourses();
+        setupCoursesSearch();  // Añadir la inicialización del buscador
         setupCreateCourseForm();
         setupEditCourseModal();
         setupDeleteCourseModal();

@@ -632,16 +632,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Formulario de asesoría
+    // Formulario de asesoría - Verificar si agendar.js está cargado para evitar duplicación
     const advisoryForm = document.getElementById('advisory-form');
     const successMessage = document.getElementById('success-message');
 
-    if (advisoryForm && successMessage) {
+    if (advisoryForm && successMessage && !window.agendarJsLoaded) {
+        // Solo agregar el event listener si agendar.js NO está cargado
         advisoryForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (window.agendarJsLoaded) {
-                return;
-            }
 
             // Determinar el tipo de servicio según la categoría seleccionada
             let service = '';
@@ -1124,13 +1122,63 @@ const response = await fetch('/backend/api/login.php', {
 
 });
 
+// Funcionalidad para ocultar/mostrar el header al hacer scroll
+let lastScrollTop = 0;
+const header = document.querySelector('.header-hidden');
+
+if (header) {
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scrolling hacia abajo
+            header.classList.add('scrolled-down');
+        } else if (scrollTop < lastScrollTop && scrollTop <= 100) {
+            // Scrolling hacia arriba o cerca del top
+            header.classList.remove('scrolled-down');
+        } else if (scrollTop < lastScrollTop && scrollTop > 100) {
+            // Scrolling hacia arriba
+            header.classList.remove('scrolled-down');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+}
+
 // Función para alternar menú móvil
 function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
+    // Manejar el menú móvil nuevo (estilo admin)
+    const adminDropdown = document.getElementById('adminDropdown');
+    const header = document.getElementById('mainHeader');
+    
+    if (adminDropdown) {
+        if (adminDropdown.classList.contains('open')) {
+            adminDropdown.classList.remove('open');
+            // Remover clase del header si es necesario
+            if(header) {
+                header.classList.remove('with-open-dropdown');
+            }
+        } else {
+            adminDropdown.classList.add('open');
+            // Añadir clase al header para cambiar las esquinas
+            if(header) {
+                header.classList.add('with-open-dropdown');
+            }
+        }
+    }
+    
+    // Manejar el menú móvil antiguo por compatibilidad
+    const oldMenu = document.getElementById('mobile-menu');
+    if (oldMenu) {
+        oldMenu.classList.toggle('hidden');
+    }
+}
+
+// Función para mostrar alertas (usa toasts para consistencia)
     if (menu) {
         menu.classList.toggle('hidden');
     }
-}
+
 
 // Función para mostrar alertas (usa toasts para consistencia)
 function showAlert(message, type = 'success') {

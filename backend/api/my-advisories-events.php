@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id'])) {
 $userId = (int)$_SESSION['user_id'];
 
 try {
-    // Obtener asesorías del usuario (tipo 'asesoria') que no tengan reembolso aprobado
+    // Obtener asesorías del usuario (tipo 'asesoria') aprobadas por el admin
     $stmt = $pdo->prepare(
         "SELECT 
             a.id,
@@ -45,14 +45,14 @@ try {
          FROM advisories a
          LEFT JOIN refunds r ON (r.refundable_id = a.id AND r.type = 'advisory_asesoria')
          WHERE a.user_id = ? AND a.service_type = 'asesoria'
+         AND a.status = 'confirmed'
          AND (r.id IS NULL OR r.refund_status != 'approved')
          ORDER BY a.date ASC, a.time ASC"
     );
     $stmt->execute([$userId]);
     $advisories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Obtener eventos del usuario (tipo 'evento') que no tengan reembolso aprobado
-    // Para eventos, buscamos la fecha en la tabla de cursos si está disponible
+    // Obtener eventos del usuario (tipo 'evento') aprobados por el admin
     $stmt = $pdo->prepare(
         "SELECT 
             a.id,
@@ -68,7 +68,10 @@ try {
                 WHEN c.event_date IS NOT NULL THEN c.event_date
                 ELSE a.date
             END AS date,
-            a.time,
+            CASE
+                WHEN c.event_time IS NOT NULL THEN c.event_time
+                ELSE a.time
+            END AS time,
             a.notes,
             a.status,
             a.price,
@@ -79,8 +82,13 @@ try {
             a.created_at
          FROM advisories a
          LEFT JOIN refunds r ON (r.refundable_id = a.id AND r.type = 'advisory_evento')
-         LEFT JOIN courses c ON (a.event_name = c.title OR a.advisory_service = c.title)
+         LEFT JOIN courses c ON (
+            a.event_name = c.title
+            OR a.advisory_service = c.title
+            OR LOWER(REPLACE(c.title, ' ', '_')) = LOWER(COALESCE(a.event_name, a.advisory_service))
+         )
          WHERE a.user_id = ? AND a.service_type = 'evento'
+         AND a.status = 'confirmed'
          AND (r.id IS NULL OR r.refund_status != 'approved')
          ORDER BY a.date ASC, a.time ASC"
     );

@@ -171,10 +171,13 @@ window.agendarJsLoaded = true;
                     return;
                 }
 
+                var unitPrice = parseFloat(price) || 0;
+                var totalPrice = unitPrice * (numPersons > 1 ? numPersons : 1);
+
                 window.pendingFormData = {
                     phone: null,
                     service: advisoryService,
-                    price: price,
+                    price: totalPrice,
                     date: date,
                     time: time,
                     notes: notes,
@@ -186,11 +189,13 @@ window.agendarJsLoaded = true;
                     eventName: eventName
                 };
 
-                window.pendingPrice = price;
+                window.pendingPrice = totalPrice;
 
                 window.openPaymentModal({
                     reference: 'CHEF-' + Date.now(),
-                    price: price
+                    price: totalPrice,
+                    unitPrice: unitPrice,
+                    numPersons: numPersons
                 });
             });
         }
@@ -310,9 +315,39 @@ window.agendarJsLoaded = true;
                 if (!result.success) return;
 
                 const courses = result.data;
-                const Asesorias = courses.filter(c => c.category === 'asesorias' || c.category === 'asesoria');
-                const Cursos = courses.filter(c => c.category === 'cursos' || c.category === 'curso');
-                const Eventos = courses.filter(c => c.category === 'eventos' || c.category === 'evento');
+                
+                // Filtrar eventos pasados para usuarios no administradores
+                const isCurrentUserAdmin = () => {
+                    const user = window.getCurrentUser ? window.getCurrentUser() : null;
+                    return user && user.role === 'admin';
+                };
+                
+                const filterPastEvents = (coursesList) => {
+                    if (isCurrentUserAdmin()) {
+                        return coursesList; // Administradores ven todos los eventos, incluyendo pasados
+                    }
+                    
+                    const now = new Date();
+                    return coursesList.filter(function(course) {
+                        // Si no es un evento, mantenerlo
+                        if (course.category !== 'eventos' && course.category !== 'evento') {
+                            return true;
+                        }
+                        // Si es un evento, verificar si la fecha ya pasó
+                        if (course.event_date) {
+                            const eventDate = new Date(course.event_date + ' ' + (course.event_time || '00:00'));
+                            return eventDate >= now;
+                        }
+                        // Si no tiene fecha de evento definida, mantenerlo
+                        return true;
+                    });
+                };
+
+                const filteredCourses = filterPastEvents(courses);
+                
+                const Asesorias = filteredCourses.filter(c => c.category === 'asesorias' || c.category === 'asesoria');
+                const Cursos = filteredCourses.filter(c => c.category === 'cursos' || c.category === 'curso');
+                const Eventos = filteredCourses.filter(c => c.category === 'eventos' || c.category === 'evento');
 
                 const advisoryServiceSelect = document.getElementById('advisory-service');
                 if (advisoryServiceSelect) {
@@ -345,6 +380,10 @@ window.agendarJsLoaded = true;
                         const opt = document.createElement('option');
                         opt.value = normalizeServiceValue(c.title);
                         opt.textContent = c.title;
+                        // Agregar aviso de evento expirado si es admin y el evento está vencido
+                        if (window.getCurrentUser && window.getCurrentUser()?.role === 'admin' && c.is_expired) {
+                            opt.textContent = c.title + ' (FECHA VENCIDA)';
+                        }
                         opt.dataset.price = Number(c.price) || 0;
                         eventSelect.appendChild(opt);
                     });
@@ -380,7 +419,37 @@ window.agendarJsLoaded = true;
                 const grid = document.getElementById('courses-grid');
                 if (!grid) return;
 
-                const courses = result.data;
+                let courses = result.data;
+                
+                // Filtrar eventos pasados para usuarios no administradores
+                const isCurrentUserAdmin = () => {
+                    const user = window.getCurrentUser ? window.getCurrentUser() : null;
+                    return user && user.role === 'admin';
+                };
+                
+                const filterPastEvents = (coursesList) => {
+                    if (isCurrentUserAdmin()) {
+                        return coursesList; // Administradores ven todos los eventos, incluyendo pasados
+                    }
+                    
+                    const now = new Date();
+                    return coursesList.filter(function(course) {
+                        // Si no es un evento, mantenerlo
+                        if (course.category !== 'eventos' && course.category !== 'evento') {
+                            return true;
+                        }
+                        // Si es un evento, verificar si la fecha ya pasó
+                        if (course.event_date) {
+                            const eventDate = new Date(course.event_date + ' ' + (course.event_time || '00:00'));
+                            return eventDate >= now;
+                        }
+                        // Si no tiene fecha de evento definida, mantenerlo
+                        return true;
+                    });
+                };
+
+                courses = filterPastEvents(courses);
+
                 grid.innerHTML = '';
 
                 courses.forEach(function(course) {
@@ -406,7 +475,13 @@ window.agendarJsLoaded = true;
                         course.category === 'eventos' || course.category === 'evento' ? 'Evento' : course.category;
                     var durationStr = course.duration ? '<p class="text-gray-500 text-xs mb-2">Duración: ' + course.duration + '</p>' : '';
 
-                    card.innerHTML = imageHtml + `
+                    // Agregar aviso de evento expirado si es admin y el evento está vencido
+                    var expiredNotice = '';
+                    if (window.getCurrentUser && window.getCurrentUser()?.role === 'admin' && course.is_expired) {
+                        expiredNotice = '<div class="bg-red-700 text-white text-xs text-center py-1 rounded mb-2">FECHA VENCIDA</div>';
+                    }
+
+                    card.innerHTML = expiredNotice + imageHtml + `
                         <span class="inline-block px-2 py-1 text-xs font-semibold text-white ${categoryColor} rounded mb-2">${categoryLabel}</span>
                         <h3 class="text-lg font-semibold text-white mb-1 cursor-pointer hover:text-amber-400" onclick="toggleCourseContent(${course.id}, this)">${course.title}</h3>
                         ${durationStr}
@@ -633,22 +708,29 @@ loadCoursesGrid().catch(console.error);
             if (!priceValue && window.pendingPrice) priceValue = window.pendingPrice;
 
             if (amountSpan) {
-                if (typeof priceValue === 'string' && priceValue.includes('$')) {
-                    amountSpan.textContent = priceValue;
+                var priceNum = parseFloat(priceValue) || 0;
+                amountSpan.textContent = '$' + priceNum.toLocaleString('es-CO');
+            }
+
+            // Mostrar/ocultar desglose de precio por personas
+            var breakdownEl = document.getElementById('payment-price-breakdown');
+            var unitPrice = serviceData.unitPrice ? parseFloat(serviceData.unitPrice) : 0;
+            var numPersons = serviceData.numPersons ? parseInt(serviceData.numPersons) : 1;
+
+            if (breakdownEl) {
+                if (numPersons > 1 && unitPrice > 0) {
+                    breakdownEl.textContent = '$' + unitPrice.toLocaleString('es-CO') + ' × ' + numPersons + ' personas';
+                    breakdownEl.classList.remove('hidden');
                 } else {
-                    var priceNum = parseFloat(priceValue) || 0;
-                    amountSpan.textContent = '$' + priceNum.toLocaleString('es-CO');
+                    breakdownEl.classList.add('hidden');
                 }
             }
 
             // Actualizar el número de pago según el método seleccionado
             if (paymentMethodSelect) {
-                // Agregar evento para actualizar la información cuando cambie la selección
                 paymentMethodSelect.onchange = function() {
                     updatePaymentInfo(this.value);
                 };
-                
-                // Mostrar la información del primer método por defecto
                 updatePaymentInfo(paymentMethodSelect.value);
             }
 

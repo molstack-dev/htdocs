@@ -91,9 +91,11 @@
 
         try {
             const userId = getEl('filter-user-id')?.value || '';
+            const search = getEl('filter-user-search')?.value.trim() || '';
             const serviceType = getEl('filter-service-type')?.value || '';
             const params = new URLSearchParams({ all: '1' });
             if (userId) params.set('user_id', userId);
+            if (search) params.set('search', search);
             if (serviceType) params.set('service_type', serviceType);
 
             const res = await fetch('/backend/api/certificados.php?' + params.toString(), { credentials: 'include' });
@@ -325,7 +327,6 @@
                 getEl('issue-user-id').value = '';
                 getEl('issue-user-info').classList.add('hidden');
                 getEl('issue-advisory').innerHTML = '<option value="">Primero busca un usuario</option>';
-                getEl('issue-expiry').value = '';
                 getEl('issue-recipient-mode').value = 'self';
                 getEl('issue-recipient-name').value = '';
                 getEl('issue-recipient-idtype').value = '';
@@ -457,7 +458,6 @@
                 getEl('group-user-id').value = '';
                 getEl('group-user-info').classList.add('hidden');
                 getEl('group-advisory').innerHTML = '<option value="">Primero busca al comprador</option>';
-                getEl('group-expiry').value = '';
                 getEl('group-participants').innerHTML = '';
                 getEl('group-include-buyer').checked = false;
                 selectedGroupUser = null;
@@ -813,16 +813,9 @@
         if (!input || !hidden) return;
 
         input.addEventListener('input', () => {
-            const q = input.value.trim();
+            // El API busca también entre los titulares de certificados grupales,
+            // quienes no necesariamente tienen una cuenta de usuario propia.
             hidden.value = '';
-            if (q.length < 2) {
-                loadCertificates();
-                return;
-            }
-            const matches = allUsers.filter(u => userMatches(u, q));
-            if (matches.length === 1) {
-                hidden.value = matches[0].id;
-            }
             loadCertificates();
         });
     }
@@ -906,4 +899,3 @@ document.addEventListener('DOMContentLoaded', async function() {
         await loadCertificates();
     });
 })();
-

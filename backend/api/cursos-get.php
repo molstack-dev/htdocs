@@ -13,8 +13,55 @@ function getImageMimeType($imageData) {
 }
 
 try {
-    $stmt = $pdo->query("SELECT id, title, description, description_detail, price, duration, category, event_date, image, created_at FROM courses ORDER BY created_at DESC");
+    $stmt = $pdo->query("SELECT id, title, description, description_detail, price, duration, category, event_date, event_time, image, created_at FROM courses ORDER BY created_at DESC");
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Verificar si el usuario es administrador
+    $isAdmin = false;
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+        $isAdmin = true;
+    }
+
+    // Si no es administrador, filtrar eventos pasados
+    if (!$isAdmin) {
+        $currentDateTime = new DateTime();
+        $filteredCourses = [];
+        
+        foreach ($courses as $course) {
+            // Si no es un evento, mantenerlo
+            if ($course['category'] !== 'eventos' && $course['category'] !== 'evento') {
+                $filteredCourses[] = $course;
+            } else {
+                // Si es un evento, verificar si la fecha ya pasó
+                if ($course['event_date']) {
+                    $eventDateTime = new DateTime($course['event_date'] . ' ' . ($course['event_time'] ?: '00:00:00'));
+                    if ($eventDateTime >= $currentDateTime) {
+                        // Solo agregar si la fecha del evento es hoy o en el futuro
+                        $filteredCourses[] = $course;
+                    }
+                } else {
+                    // Si no tiene fecha de evento definida, no se considera válido como evento
+                    $filteredCourses[] = $course;
+                }
+            }
+        }
+        $courses = $filteredCourses;
+    } else {
+        // Para administradores, agregar un campo que indique si el evento está vencido
+        $currentDateTime = new DateTime();
+        foreach ($courses as &$course) {
+            if (($course['category'] === 'eventos' || $course['category'] === 'evento') && $course['event_date']) {
+                $eventDateTime = new DateTime($course['event_date'] . ' ' . ($course['event_time'] ?: '00:00:00'));
+                $course['is_expired'] = $eventDateTime < $currentDateTime;
+            } else {
+                $course['is_expired'] = false;
+            }
+        }
+        unset($course);
+    }
 
     // Convertir imágenes base64 a data URLs (o dejar URL tal cual si existe)
     foreach ($courses as &$course) {

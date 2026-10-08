@@ -53,7 +53,10 @@ try {
                     WHEN c.event_date IS NOT NULL THEN c.event_date
                     ELSE a.date
                 END AS date,
-                a.time,
+                CASE
+                    WHEN c.event_time IS NOT NULL THEN c.event_time
+                    ELSE a.time
+                END AS time,
                 a.notes,
                 a.status,
                 a.price,
@@ -63,7 +66,11 @@ try {
                 a.payment_method,
                 a.created_at
              FROM advisories a
-             LEFT JOIN courses c ON (a.event_name = c.title OR a.advisory_service = c.title)
+             LEFT JOIN courses c ON (
+                a.event_name = c.title
+                OR a.advisory_service = c.title
+                OR LOWER(REPLACE(c.title, ' ', '_')) = LOWER(COALESCE(a.event_name, a.advisory_service))
+             )
              WHERE a.user_id = ? AND a.id = ? AND a.service_type = ?
              LIMIT 1"
         );

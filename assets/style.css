@@ -286,6 +286,11 @@ header.scrolled {
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 
+/* Estilos para las esquinas del header al desplegar/contraer la lista */
+header.header-hidden.with-open-dropdown {
+    border-radius: 0.5rem 0.5rem 0 0; /* Solo esquinas inferiores en ángulo recto, superiores redondeadas */
+}
+
 footer {
     background: #1e1e1eb3;
     backdrop-filter: blur(10px);
@@ -293,6 +298,25 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.08);
     position: relative;
     padding: 1rem 0;
+}
+
+/* Header hide/show functionality */
+.header-hidden {
+    background: rgba(30, 30, 30, 0.9) !important; /* Aumentar la opacidad inicial */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+.header-hidden.scrolled-down {
+    transform: translateY(-100%);
+}
+
+/* Si el header tiene la clase con-open-dropdown (menú abierto), mantener opacidad alta */
+.header-hidden.with-open-dropdown {
+    background: rgba(30, 30, 30, 0.9)  !important; /* Mayor opacidad cuando el menú está abierto */
+    border-radius: 0.5rem 0.5rem 0 0; /* Solo esquinas inferiores en ángulo recto, superiores redondeadas */
 }
 
 /* 
@@ -1725,4 +1749,385 @@ footer {
     .admin-page-shell .dashboard-grid > .dash-card:last-child {
         grid-column: auto;
     }
+}
+
+/* =============================================================================
+ * ADMIN MOBILE DROPDOWN NAV
+ * Menú desplegable para móvil en páginas admin
+ * =============================================================================
+ */
+
+/* Botón hamburguesa */
+.admin-mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.admin-mobile-menu-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+@media (max-width: 768px) {
+    .admin-mobile-menu-btn {
+        display: flex;
+    }
+}
+
+/* Panel dropdown - con estilos idénticos al header */
+.admin-mobile-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(30, 30, 30, 0.9); /* Fondo opaco como el header */
+    backdrop-filter: blur(15px); /* Conserva el efecto de blur */
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 0.5rem 0.5rem;
+    z-index: 998;
+    overflow-y: auto;
+    display: none;
+    padding-top: 1.25rem; /* py-5 = 20px = 1.25rem */
+    padding-bottom: 1.25rem; /* py-5 = 20px = 1.25rem */
+}
+
+.admin-mobile-dropdown.open {
+    display: block;
+}
+
+/* Estilos para los enlaces en el menú desplegable para que coincidan con el header */
+.admin-dropdown-nav {
+    padding: 0.5rem 0; /* Espaciado consistente */
+}
+
+.admin-dropdown-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espacio entre ícono y texto */
+    padding: 0.5rem 1rem; /* Espaciado similar a los enlaces del header */
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    border-radius: 0.375rem; /* rounded-md equivalente */
+    margin: 0.125rem 0; /* Pequeño margen entre elementos */
+}
+
+.admin-dropdown-nav a:hover {
+    background: rgba(255,255,255,0.1);
+    color: #a855f7; /* purple-500 */
+    border-color: rgba(255,255,255,0.1);
+}
+
+.admin-dropdown-nav a.active-page {
+    background: rgba(166, 85, 247, 0.2); /* purple-500 con transparencia */
+    color: #a855f7; /* purple-500 */
+    border-color: rgba(166, 85, 247, 0.4); /* Más consistente con el estilo del header */
+}
+
+/* Estilos para enlaces activos en el header principal */
+header nav a.active-page {
+    background: rgba(166, 85, 247, 0.2); /* purple-500 con transparencia */
+    color: #a855f7 !important; /* purple-500 */
+    border-radius: 0.375rem; /* rounded-md equivalente */
+    padding: 0.25rem 0.5rem;
+}
+
+.admin-dropdown-nav a svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+}
+
+.admin-dropdown-nav a:hover svg,
+.admin-dropdown-nav a.active-page svg {
+    opacity: 1;
+}
+
+/* Fila superior del dropdown */
+.admin-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.admin-dropdown-header span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.admin-dropdown-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255,255,255,0.06);
+    color: #9ca3af;
+    cursor: pointer;
+    border: none;
+}
+
+.admin-dropdown-close:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+}
+
+/* Lista de enlaces */
+.admin-dropdown-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.admin-dropdown-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.5rem;
+    color: #d1d5db;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    border: 1px solid transparent;
+}
+
+.admin-dropdown-nav a:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-style: normal;
+    border-color: rgba(255,255,255,0.06);
+}
+
+/* Estilos para enlaces activos en el header principal */
+header nav a.active-page-main {
+    background: rgba(166, 85, 247, 0.2); /* purple-500 con transparencia */
+    color: #a855f7 !important; /* purple-500 */
+    border: 1px solid rgba(166, 85, 247, 0.4); /* Borde consistente con el estilo del header */
+    border-radius: 0.375rem; /* rounded-md equivalente */
+    padding: 0.25rem 0.5rem;
+    height: 37px;
+    
+    /* 1. Activamos Flexbox */
+    display: flex;
+    
+    /* 2. Centramos horizontalmente */
+    justify-content: center;
+    
+    /* 3. Centramos verticalmente */
+    align-items: center;
+}
+
+
+.admin-dropdown-nav a.active-page {
+    background: rgba(166, 85, 247, 0.2); /* purple-500 con transparencia */
+    color: #a855f7; /* purple-500 */
+    border-color: rgba(166, 85, 247, 0.4); /* Más consistente con el estilo del header */
+}
+
+.admin-dropdown-nav a svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+}
+
+.admin-dropdown-nav a:hover svg,
+.admin-dropdown-nav a.active-page svg {
+    opacity: 1;
+}
+
+/* Estilos para la línea separadora y enlace de cerrar sesión en el menú móvil */
+.admin-dropdown-nav hr {
+    border: 0;
+    height: 1px;
+    background-color: #dc2626; /* Rojo más intenso */
+    margin: 10px 0;
+}
+
+.cerrar-sesion-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #dc2626 !important; /* Rojo más intenso */
+    padding: 10px 0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.cerrar-sesion-link:hover {
+    background-color: rgba(220, 38, 38, 0.1); /* Rojo más intenso con transparencia */
+}
+
+/* Separador antes de logout */
+.admin-dropdown-nav .dropdown-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 0.375rem 0;
+}
+
+.admin-dropdown-nav a.logout-link {
+    color: #f87171;
+}
+
+.admin-dropdown-nav a.logout-link:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.15);
+}
+
+/* Overlay para cerrar */
+.admin-dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+/* Eliminar el fondo del overlay para menú que se despliega desde el header */
+.header-menu-overlay {
+    /* Esta clase no tendrá fondo */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: none;
+}
+
+/* =============================================================================
+ * ADMIN PAGE — SECCIÓN HEADING MEJORADO
+ * Subtítulo descriptivo bajo el heading de cada módulo
+ * =============================================================================
+ */
+
+.admin-section-heading {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.25rem;
+    text-align: center;
+}
+
+.admin-section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4rem;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #b45309, transparent);
+}
+
+.admin-section-heading h3 {
+    color: #fff;
+    font-family: 'Parisienne', cursive;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 400;
+    margin: 0 0 0.4rem;
+    line-height: 1.2;
+}
+
+.admin-section-heading p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* =============================================================================
+ * ADMIN TABLES — mejoras visuales
+ * =============================================================================
+ */
+
+.admin-page-shell table thead tr {
+    border-bottom: 1px solid #1e2028;
+}
+
+.admin-page-shell table thead th {
+    padding-bottom: 0.875rem;
+    color: #9ca3af;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.admin-page-shell table tbody tr {
+    border-bottom: 1px solid #111318;
+    transition: background 0.15s;
+}
+
+.admin-page-shell table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.admin-page-shell table tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.admin-page-shell table tbody td {
+    padding: 0.75rem 0;
+    font-size: 0.85rem;
+    color: #d1d5db;
+    vertical-align: middle;
+}
+
+/* =============================================================================
+ * ADMIN CARDS — mejoras para product-card en contexto admin
+ * =============================================================================
+ */
+
+.admin-page-shell .product-card {
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+/* Subtítulo de sección dentro de tarjeta */
+.admin-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #d6a34a;
+    margin: 0 0 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #1e2028;
+}
+
+/* Filtros en fila */
+.admin-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    align-items: flex-end;
+}
+
+.admin-filter-row select,
+.admin-filter-row input {
+    flex: 1;
+    min-width: 160px;
+    max-width: 280px;
 }

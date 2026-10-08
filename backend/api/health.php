@@ -7,7 +7,7 @@ require_once __DIR__ . '/../config.php';
 // No expone credenciales, consultas ni datos de usuarios.
 $requiredSchema = [
     'users' => ['id', 'name', 'full_name', 'id_type', 'id_number', 'custom_doc_type', 'email', 'phone', 'password', 'role'],
-    'courses' => ['id', 'title', 'description', 'description_detail', 'price', 'duration', 'category', 'event_date', 'image'],
+    'courses' => ['id', 'title', 'description', 'description_detail', 'price', 'duration', 'category', 'event_date', 'event_time', 'image'],
     'registrations' => ['id', 'client_id', 'course_id', 'course_price', 'status', 'payment_status', 'payment_receipt', 'payment_method'],
     'advisories' => ['id', 'user_id', 'service_type', 'status', 'payment_status', 'payment_receipt', 'payment_method', 'num_persons'],
     'refunds' => ['id', 'user_id', 'type', 'refundable_id', 'refund_status', 'admin_receipt'],

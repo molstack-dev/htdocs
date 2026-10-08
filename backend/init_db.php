@@ -116,9 +116,16 @@ try {
         duration VARCHAR(100),
         category VARCHAR(100),
         event_date DATE NULL,
+        event_time TIME NULL,
         image MEDIUMTEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // Compatibilidad con instalaciones creadas antes de la hora de eventos.
+    $courseCols = $pdo->query("SHOW COLUMNS FROM courses")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('event_time', $courseCols)) {
+        try { $pdo->exec("ALTER TABLE courses ADD COLUMN event_time TIME NULL AFTER event_date"); } catch (Exception $e) {}
+    }
 
     // Crear tabla de registros
     $pdo->exec("CREATE TABLE IF NOT EXISTS registrations (

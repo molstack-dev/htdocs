@@ -202,30 +202,34 @@
 
         history.forEach(function (item) {
           const statusClass =
-            item.status === 'confirmed'
+            item.status === 'pending'
+              ? 'bg-yellow-900 text-yellow-300'
+              : item.status === 'confirmed'
               ? 'bg-blue-900 text-blue-300'
               : item.status === 'completed'
                 ? 'bg-green-900 text-green-300'
                 : item.status === 'refund_approved'
                   ? 'bg-green-900 text-green-300'
-                  : item.status === 'refund_requested'
+                  : item.status === 'refund_requested' || item.status === 'refund_pending'
                     ? 'bg-yellow-900 text-yellow-300'
                     : item.status === 'refund_rejected'
                       ? 'bg-red-900 text-red-300'
                       : 'bg-red-900 text-red-300';
 
           const statusLabel =
-            item.status === 'confirmed'
+            item.status === 'pending'
+              ? 'En espera'
+              : item.status === 'confirmed'
               ? 'Aprobado'
               : item.status === 'completed'
                 ? 'Completado'
                 : item.status === 'refund_approved'
                   ? 'Reembolso Aprobado'
-                  : item.status === 'refund_requested'
-                    ? 'Pendiente'
+                  : item.status === 'refund_requested' || item.status === 'refund_pending'
+                    ? 'Reembolso en espera'
                     : item.status === 'refund_rejected'
                       ? 'Rechazado'
-                      : 'Cancelado';
+                        : 'Cancelado';
 
           // Determine type and name
           let serviceTypeLabel = 'N/A';
@@ -260,7 +264,7 @@
           let refundBtn = '';
 
           // Si es un reembolso pendiente directo (de la tabla refunds)
-          if (item.status === 'refund_requested') {
+          if (item.status === 'refund_requested' || item.status === 'refund_pending') {
             const btnText = 'Cancelar Reembolso';
             const btnClass = 'bg-gray-700 hover:bg-gray-600';
             const btnState = 'cancel';
@@ -289,9 +293,7 @@
             const createdAt = new Date(item.created_at);
             const daysSince = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
             
-            const statusOk = source === 'registration' 
-              ? (item.status === 'confirmed' || item.status === 'completed')
-              : (item.status === 'confirmed' || item.status === 'completed' || (item.status === 'pending' && item.price > 0));
+            const statusOk = item.status === 'confirmed' || item.status === 'completed';
             
             const isRefundable = (source === 'registration' || item.service_type === 'curso' || item.service_type === 'asesoria' || item.service_type === 'evento') &&
                                 daysSince <= 7 && 
@@ -299,7 +301,7 @@
                                 item.payment_status !== 'refund_requested' &&
                                 item.payment_status !== 'refunded';
             
-            const refundPending = item.payment_status === 'refund_requested' || item.payment_status === 'pending';
+            const refundPending = item.status === 'refund_requested' || item.status === 'refund_pending' || item.payment_status === 'refund_requested';
             
             // Verificar si hay un reembolso ya procesado (aprobado o rechazado)
             const refundProcessed = (item.status === 'refund_approved' || 

@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // GET - Listar cursos
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $pdo->query("SELECT id, title, description, description_detail, price, duration, category, event_date, image, created_at FROM courses ORDER BY created_at DESC");
+        $stmt = $pdo->query("SELECT id, title, description, description_detail, price, duration, category, event_date, event_time, image, created_at FROM courses ORDER BY created_at DESC");
         $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo json_encode([
@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $duration = isset($_POST['duration']) ? trim($_POST['duration']) : '';
         $price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
         $event_date = isset($_POST['event_date']) ? trim($_POST['event_date']) : null;
+        $event_time = isset($_POST['event_time']) ? trim($_POST['event_time']) : null;
         $imageUrl = isset($_POST['image_url']) ? trim($_POST['image_url']) : '';
 
         if (empty($title) || $price <= 0) {
@@ -57,25 +58,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Normalizar event_date (solo aplica para eventos)
         $event_date_normalized = null;
+        $event_time_normalized = null;
         if ($category === 'eventos' && !empty($event_date)) {
             // input date => YYYY-MM-DD
             $event_date_normalized = $event_date;
+            $event_time_normalized = $event_time ?: null;
         }
 
         if ($id) {
             // Actualizar curso existente
             if ($imageData) {
-                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, description_detail = ?, category = ?, duration = ?, price = ?, event_date = ?, image = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $imageData, $id]);
+                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, description_detail = ?, category = ?, duration = ?, price = ?, event_date = ?, event_time = ?, image = ? WHERE id = ?");
+                $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $event_time_normalized, $imageData, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, description_detail = ?, category = ?, duration = ?, price = ?, event_date = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $id]);
+                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, description_detail = ?, category = ?, duration = ?, price = ?, event_date = ?, event_time = ? WHERE id = ?");
+                $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $event_time_normalized, $id]);
             }
 
             echo json_encode(['success' => true, 'message' => 'Curso actualizado correctamente']);
         } else {
-            $stmt = $pdo->prepare("INSERT INTO courses (title, description, description_detail, category, duration, price, event_date, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $imageData]);
+            $stmt = $pdo->prepare("INSERT INTO courses (title, description, description_detail, category, duration, price, event_date, event_time, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $descriptionDetail, $category, $duration, $price, $event_date_normalized, $event_time_normalized, $imageData]);
 
             echo json_encode(['success' => true, 'message' => 'Curso creado correctamente']);
         }

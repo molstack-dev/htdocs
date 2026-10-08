@@ -64,6 +64,22 @@ if ($method === 'GET') {
             $conditions[] = 'c.user_id = ?';
             $params[] = (int) $_GET['user_id'];
         }
+        $search = trim((string) ($_GET['search'] ?? ''));
+        if ($search !== '') {
+            // Incluye datos del titular para encontrar participantes de compras grupales
+            // aunque no tengan una cuenta de usuario en la plataforma.
+            $search = substr($search, 0, 120);
+            $like = '%' . $search . '%';
+            $conditions[] = "(
+                c.holder_name LIKE ? OR
+                u.full_name LIKE ? OR
+                u.name LIKE ? OR
+                u.email LIKE ? OR
+                c.holder_id_number LIKE ? OR
+                u.id_number LIKE ?
+            )";
+            array_push($params, $like, $like, $like, $like, $like, $like);
+        }
     } else {
         $conditions[] = 'c.user_id = ?';
         $params[] = (int) $_SESSION['user_id'];

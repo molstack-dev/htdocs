@@ -88,6 +88,14 @@ if ($method === 'GET') {
         // User: sólo sus registros
         $where[] = 'r.client_id = ?';
         $params[] = $_SESSION['user_id'];
+        // Un curso con reembolso aprobado deja de ser un servicio activo.
+        $where[] = "r.payment_status <> 'refunded'";
+        $where[] = "NOT EXISTS (
+            SELECT 1 FROM refunds rf
+            WHERE rf.type = 'registration'
+              AND rf.refundable_id = r.id
+              AND rf.refund_status = 'approved'
+        )";
     }
 
     if ($status) {

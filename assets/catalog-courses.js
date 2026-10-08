@@ -11,6 +11,32 @@
         return map[cat] || 'bg-gray-600';
     }
 
+    function isUserAdmin() {
+        var user = getCurrentUser();
+        return user && user.role === 'admin';
+    }
+
+    function filterPastEvents(courses) {
+        if (isUserAdmin()) {
+            return courses; // Administradores ven todos los eventos, incluyendo pasados
+        }
+        
+        const now = new Date();
+        return courses.filter(function(course) {
+            // Si no es un evento, mantenerlo
+            if (course.category !== 'eventos' && course.category !== 'evento') {
+                return true;
+            }
+            // Si es un evento, verificar si la fecha ya pasó
+            if (course.event_date) {
+                const eventDate = new Date(course.event_date + ' ' + (course.event_time || '00:00'));
+                return eventDate >= now;
+            }
+            // Si no tiene fecha de evento definida, mantenerlo
+            return true;
+        });
+    }
+
     function renderCourses(filter) {
         var grid = document.getElementById('courses-grid');
         if (!grid) return;
@@ -25,6 +51,9 @@
             var dbCat = map[filter] || filter;
             filtered = allCourses.filter(function(c) { return c.category === dbCat; });
         }
+
+        // Filtrar eventos pasados para usuarios no administradores
+        filtered = filterPastEvents(filtered);
 
         if (filtered.length === 0) {
             grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-8">No hay cursos en esta categoría.</div>';
@@ -45,10 +74,17 @@
                 ? '<div class="rounded-lg mb-4 overflow-hidden flex items-center justify-center bg-gray-700" style="height: auto;"><img src="' + c.image + '" class="max-h-full max-w-full object-contain rounded-lg" alt="' + c.title + '"></div>'
                 : '';
 
+            // Agregar aviso de evento expirado si es admin y el evento está vencido
+            var expiredNotice = '';
+            if (isUserAdmin() && c.is_expired) {
+                expiredNotice = '<div class="bg-red-700 text-white text-xs text-center py-1 rounded mb-2">FECHA VENCIDA</div>';
+            }
+
             // Botón de inscripción redirige a registro.html
             var inscriptionBtn = '<a href="registro.html" class="flex-1 text-center py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">Inscribirse</a>';
 
             card.innerHTML =
+                expiredNotice +
                 imgHtml +
                 '<div class="mb-4">' +
                 '<span class="inline-block px-3 py-1 ' + getBadgeClass(c.category) + ' text-white rounded-full text-sm">' + getCategoryLabel(c.category) + '</span>' +
@@ -122,4 +158,3 @@
         loadCatalogCourses();
     }
 })();
-

@@ -15,72 +15,146 @@
         <div id="toast-container" class="fixed top-24 right-4 z-50 flex flex-col gap-2"></div>
 
         <!-- Modal de Inscripción -->
-        <div id="inscriptionModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center">
-            <div class="bg-gray-800 p-8 rounded-xl max-w-md w-full mx-4">
-                <h3 id="inscriptionCourseName" class="text-2xl font-bold text-white mb-4"></h3>
-                <p id="inscriptionCoursePrice" class="text-amber-500 font-bold text-xl mb-6"></p>
-                <div class="bg-gray-700 p-4 rounded-lg mb-6">
-                    <p class="text-gray-300 text-sm mb-2">Método de pago:</p>
-                    <p class="text-white">💳 Nequi: 322 945 2346</p>
-                    <p class="text-white">📱 Transferencia bancaria</p>
-                    <p class="text-gray-400 text-xs mt-2">Envía el comprobante de pago por WhatsApp para confirmar tu inscripción</p>
-                </div>
-                <div class="flex space-x-3">
-                    <a id="whatsappInscription" href="#" target="_blank" class="flex-1 text-center py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
-                        Confirmar por WhatsApp
-                    </a>
-                    <button onclick="closeInscriptionModal()" class="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                        Cerrar
+        <div id="inscriptionModal" class="fixed inset-0 bg-black bg-opacity-70 hidden z-50 flex items-center justify-center" onclick="if(event.target===this)closeInscriptionModal()">
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#1e2028]">
+                    <h3 id="inscriptionCourseName" class="text-lg font-semibold text-white leading-tight"></h3>
+                    <button onclick="closeInscriptionModal()" class="text-gray-500 hover:text-white transition-colors ml-4 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
                     </button>
+                </div>
+                <div class="px-6 py-5">
+                    <p id="inscriptionCoursePrice" class="text-2xl font-bold text-amber-400 mb-5"></p>
+                    <div class="bg-[#15161a] border border-[#1e2028] rounded-lg p-4 mb-5 space-y-2">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Método de pago</p>
+                        <div class="flex items-center gap-2 text-gray-300 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="text-amber-500 flex-shrink-0" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/></svg>
+                            Nequi / Bancolombia / Daviplata / Nu
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-300 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="text-amber-500 flex-shrink-0" viewBox="0 0 16 16"><path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>
+                            Número: 322 945 2346
+                        </div>
+                        <p class="text-gray-500 text-xs pt-1">Envía el comprobante de pago por WhatsApp para confirmar tu inscripción.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a id="whatsappInscription" href="#" target="_blank" class="flex-1 text-center py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-lg text-sm font-semibold transition-colors">
+                            Confirmar por WhatsApp
+                        </a>
+                        <button onclick="closeInscriptionModal()" class="px-4 py-2.5 bg-[#1e2028] hover:bg-[#292a34] text-gray-300 rounded-lg text-sm transition-colors">
+                            Cerrar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Modal para detalles del curso -->
-        <div id="courseDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-auto">
-            <div class="min-h-screen px-4 py-12 flex items-center justify-center">
-                <div class="bg-gray-800 bg-opacity-95 p-8 rounded-xl max-w-3xl w-full relative">
-                    <button onclick="closeCourseDetails()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+        <div id="courseDetailsModal" class="fixed inset-0 bg-black bg-opacity-70 hidden z-50 flex items-center justify-center" onclick="if(event.target===this)closeCourseDetails()">
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[85vh] flex flex-col">
+                <div class="flex items-start justify-between px-6 py-4 border-b border-[#1e2028] flex-shrink-0">
+                    <h2 id="courseTitle" class="text-xl font-semibold text-white pr-4 leading-snug"></h2>
+                    <button onclick="closeCourseDetails()" class="text-gray-500 hover:text-white transition-colors flex-shrink-0 mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
                     </button>
-                    <h2 id="courseTitle" class="text-3xl font-bold mb-4 text-white"></h2>
-                    <div id="courseDetailsContent" class="text-gray-300 space-y-4"></div>
+                </div>
+                <div id="courseDetailsContent" class="text-gray-300 text-sm leading-relaxed space-y-3 px-6 py-5 overflow-y-auto"></div>
+                <div class="flex justify-end px-6 py-4 border-t border-[#1e2028] flex-shrink-0">
+                    <button onclick="closeCourseDetails()" class="px-5 py-2.5 bg-[#1e2028] hover:bg-[#292a34] text-gray-300 rounded-lg text-sm transition-colors">Cerrar</button>
                 </div>
             </div>
         </div>
 
         <!-- Header -->
-        <header class="shadow-lg rounded-lg backdrop-blur">
-            <div class="container mx-auto px-6 py-5 flex justify-between items-center">
+        <header class="py-5 backdrop-blur header-hidden" id="mainHeader">
+            <div class="container mx-auto px-6 flex justify-between items-center">
                 <h1 class="text-2xl parisienne-font bg-gradient-to-r from-purple-900 to-purple-600 bg-clip-text">
                     <a href="../../?i=1">Chef Jonathan Buitrago</a>
                 </h1>
                 <nav class="hidden md:flex items-center space-x-10">
                     <a href="user.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/></svg></a>
                     <a href="mis-servicios.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/></svg></a>
+                    <a href="agendar.html" class="active-page-main hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16"><path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/></svg></a>
                     <a href="historial.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/><path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/><path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></svg></a>
                     <a href="certificados.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z"/></svg></a>
-                    <a href="perfil.html" class="w-10 h-8 rounded-full bg-purple-800 hover:bg-purple-500 flex items-center justify-center">U</a>
+                    <a href="perfil.html" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/></svg></a>
+                    <a href="javascript:void(0)" onclick="logout()" class="hover:text-purple-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="red" viewBox="0 0 16 16"><path d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/><path d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/></svg></a>
                 </nav>
                 <div class="flex md:hidden items-center space-x-3">
-                    <a href="user.html" class="text-white hover:text-purple-500 p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/></svg>
-                    </a>
-                    <a href="mis-servicios.html" class="text-white hover:text-purple-500 p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/></svg>
-                    </a>
-                    <a href="historial.html" class="text-white hover:text-purple-500 p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/><path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/><path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></svg>
-                    </a>
-                    <a href="certificados.html" class="text-white hover:text-purple-500 p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z"/></svg>
-                    </a>
-                    <a href="perfil.html" class="w-10 h-10 rounded-full bg-purple-800 hover:bg-purple-500 flex items-center justify-center">U</a>
+                    <button class="admin-mobile-menu-btn md:hidden" id="mobileMenuBtn" aria-label="Abrir menú" onclick="toggleMobileMenu()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="admin-mobile-dropdown backdrop-blur" id="adminDropdown">
+                <div class="container mx-auto px-6"> <!-- Agregar container y padding horizontal como en el header -->
+                    <nav class="admin-dropdown-nav">
+                        <a href="user.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/></svg>
+                            Inicio
+                        </a>
+                        <a href="mis-servicios.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.993c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/></svg>
+                            Mis Servicios
+                        </a>
+                        <a href="agendar.html" class="active-page">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/></svg>
+                            Agendar
+                        </a>
+                        <a href="historial.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/><path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/><path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></svg>
+                            Historial
+                        </a>
+                        <a href="certificados.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z"/></svg>
+                            Certificados
+                        </a>
+                        <a href="perfil.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/></svg>
+                            Perfil
+                        </a>
+                        <hr class="border-red-500 my-2">
+                        <a href="javascript:void(0)" onclick="logout()"  class="cerrar-sesion-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red" viewBox="0 0 16 16">
+                                <path d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
+                                <path d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+                            </svg>
+                            Cerrar Sesión
+                        </a>
+                    </nav>
                 </div>
             </div>
         </header>
+        <script>
+            function toggleMobileMenu() {
+                var dropdown = document.getElementById('adminDropdown');
+                var header = document.getElementById('mainHeader');
+                
+                if (dropdown.classList.contains('open')) {
+                    dropdown.classList.remove('open');
+                    // Remover clase del header si es necesario
+                    if(header) {
+                        header.classList.remove('with-open-dropdown');
+                    }
+                } else {
+                    dropdown.classList.add('open');
+                    // Añadir clase al header para cambiar las esquinas
+                    if(header) {
+                        header.classList.add('with-open-dropdown');
+                    }
+                }
+            }
+            // Cerrar el menú si se hace clic en un enlace
+            document.querySelectorAll('#adminDropdown a').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.getElementById('adminDropdown').classList.remove('open');
+                    var header = document.getElementById('mainHeader');
+                    if(header) {
+                        header.classList.remove('with-open-dropdown');
+                    }
+                });
+            });
+        </script>
 
         <!-- Área de Agendar Servicio -->
         <section class="user-page-shell min-h-screen pt-24 pb-16">
@@ -315,10 +389,15 @@
         </section>
 
         <!-- Modal de Términos y Condiciones -->
-        <div id="terminos-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div class="bg-gray-800 p-8 rounded-xl max-w-lg mx-4 max-h-[80vh] overflow-y-auto">
-                <h3 class="text-xl font-semibold text-white mb-4">Términos y Condiciones</h3>
-                <div class="text-gray-300 text-sm space-y-4 text-left">
+        <div id="terminos-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this)closeTerminosModal()">
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-lg w-full mx-4 max-h-[85vh] flex flex-col">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#1e2028] flex-shrink-0">
+                    <h3 class="text-lg font-semibold text-white">Términos y Condiciones</h3>
+                    <button onclick="closeTerminosModal()" class="text-gray-500 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
+                    </button>
+                </div>
+                <div class="text-gray-300 text-sm space-y-4 text-left px-6 py-5 overflow-y-auto leading-relaxed">
                     <p>Al aceptar estos términos y condiciones, usted acepta lo siguiente:</p>
 
                     <h4 class="text-lg font-semibold text-white">1. Servicios de Asesoría</h4>
@@ -345,8 +424,8 @@
                     <h4 class="text-lg font-semibold text-white">8. Contacto</h4>
                     <p>WhatsApp: +57 322 945 2346 | Instagram: @chef_jonathan_buitrago</p>
                 </div>
-                <div class="flex justify-end mt-6">
-                    <button type="button" onclick="closeTerminosModal()" class="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">Cerrar</button>
+                <div class="flex justify-end px-6 py-4 border-t border-[#1e2028] flex-shrink-0">
+                    <button type="button" onclick="closeTerminosModal()" class="px-5 py-2.5 bg-amber-700 hover:bg-amber-600 text-white rounded-lg text-sm font-semibold transition-colors">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -366,63 +445,95 @@
 
         <!-- Modal de Detalles -->
         <div id="detalles-solicitud-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeDetallesModal()">
-            <div class="bg-gray-800 p-6 rounded-xl max-w-lg mx-4 shadow-2xl border border-gray-700 w-full max-h-[90vh] overflow-y-auto">
-                <h3 id="detalles-modal-title" class="text-xl font-semibold text-white mb-4 border-b border-gray-600 pb-3">Detalles de la Solicitud</h3>
-                <div id="detalles-solicitud-content" class="text-gray-300 space-y-2"></div>
-                <div class="flex justify-end mt-6">
-                    <button type="button" onclick="closeDetallesModal()" class="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600">Cerrar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Comprobante (estilo historial) -->
-        <div id="comprobante-solicitud-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[101]" onclick="if(event.target===this)closeComprobanteModal()">
-            <div class="bg-gray-800 p-6 rounded-xl max-w-lg mx-4 shadow-2xl border border-gray-700 w-full max-h-[90vh] overflow-y-auto">
-                <h3 id="comprobante-modal-title" class="text-xl font-semibold text-white mb-4 border-b border-gray-600 pb-3">Comprobante de Pago</h3>
-                <div id="comprobante-solicitud-content" class="text-gray-300 space-y-2"></div>
-                <div class="flex justify-end mt-6 gap-3">
-                    <button type="button" id="download-inscription-receipt-btn" disabled class="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50" onclick="window.downloadInscriptionReceipt && window.downloadInscriptionReceipt()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-                        </svg>
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-lg w-full mx-4 max-h-[85vh] flex flex-col">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#1e2028] flex-shrink-0">
+                    <h3 id="detalles-modal-title" class="text-lg font-semibold text-white">Detalles de la Solicitud</h3>
+                    <button onclick="closeDetallesModal()" class="text-gray-500 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
                     </button>
-                    <button type="button" onclick="closeComprobanteModal()" class="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cerrar</button>
+                </div>
+                <div id="detalles-solicitud-content" class="text-gray-300 text-sm space-y-1 px-6 py-5 overflow-y-auto leading-relaxed"></div>
+                <div class="flex justify-end px-6 py-4 border-t border-[#1e2028] flex-shrink-0">
+                    <button type="button" onclick="closeDetallesModal()" class="px-5 py-2.5 bg-[#1e2028] hover:bg-[#292a34] text-gray-300 rounded-lg text-sm transition-colors">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Comprobante -->
+        <div id="comprobante-solicitud-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[101]" onclick="if(event.target===this)closeComprobanteModal()">
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-lg w-full mx-4 max-h-[85vh] flex flex-col">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#1e2028] flex-shrink-0">
+                    <h3 id="comprobante-modal-title" class="text-lg font-semibold text-white">Comprobante de Pago</h3>
+                    <button onclick="closeComprobanteModal()" class="text-gray-500 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
+                    </button>
+                </div>
+                <div id="comprobante-solicitud-content" class="text-gray-300 space-y-2 px-6 py-5 overflow-y-auto flex-1"></div>
+                <div class="flex justify-end gap-3 px-6 py-4 border-t border-[#1e2028] flex-shrink-0">
+                    <button type="button" id="download-inscription-receipt-btn" disabled class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-40" onclick="window.downloadInscriptionReceipt && window.downloadInscriptionReceipt()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+                        Descargar
+                    </button>
+                    <button type="button" onclick="closeComprobanteModal()" class="px-5 py-2.5 bg-[#1e2028] hover:bg-[#292a34] text-gray-300 rounded-lg text-sm transition-colors">Cerrar</button>
                 </div>
             </div>
         </div>
 
 
 
-        <!-- Modal de Pago Nequi (fuera del scroll) -->
-        <div id="payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div class="bg-gray-800 p-8 rounded-xl max-w-md mx-4">
-                <h3 class="text-xl font-semibold text-white mb-4">Método de Pago</h3>
-                <div class="text-gray-300 mb-4">
-                    <label class="block text-sm font-medium mb-2">Selecciona tu método de pago:</label>
-                    <select id="payment-method-select" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 mb-3">
-                        <option value="nequi">Nequi: 322 945 2346</option>
-                        <option value="bancolombia">Bancolombia: 322 945 2346</option>
-                        <option value="daviplata">Daviplata: 322 945 2346</option>
-                        <option value="nu">Nu: 322 945 2346</option>
-                    </select>
-                    <div id="payment-info" class="mb-4">
-                        <p class="mb-2">Número de cuenta:</p>
-                        <p class="text-2xl font-bold text-amber-500 mb-4" id="payment-number">322 945 2346</p>
+        <!-- Modal de Pago -->
+        <div id="payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this)closePaymentModal()">
+            <div class="bg-[#101115] border border-[#1e2028] rounded-xl shadow-2xl max-w-md w-full mx-4">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#1e2028]">
+                    <h3 class="text-lg font-semibold text-white">Método de Pago</h3>
+                    <button onclick="closePaymentModal()" class="text-gray-500 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>
+                    </button>
+                </div>
+                <div class="px-6 py-5 space-y-4">
+                    <!-- Selector de método -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Método</label>
+                        <select id="payment-method-select" class="w-full px-3 py-2.5 rounded-lg bg-[#15161a] border border-[#1e2028] text-white text-sm focus:border-amber-600 focus:outline-none">
+                            <option value="nequi">Nequi</option>
+                            <option value="bancolombia">Bancolombia</option>
+                            <option value="daviplata">Daviplata</option>
+                            <option value="nu">Nu</option>
+                        </select>
                     </div>
-                    <p class="text-sm text-gray-400 mb-2">Incluye el concepto: <span id="payment-reference" class="text-white"></span></p>
-                    <p class="text-sm text-gray-400 mb-4">Monto: <span id="payment-amount" class="text-amber-500 font-bold"></span></p>
+
+                    <!-- Info de pago -->
+                    <div class="bg-[#15161a] border border-[#1e2028] rounded-lg p-4 space-y-3">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">Número de cuenta</p>
+                            <p class="text-xl font-bold text-amber-400" id="payment-number">322 945 2346</p>
+                        </div>
+                        <div class="border-t border-[#1e2028] pt-3 space-y-1.5">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Concepto</span>
+                                <span id="payment-reference" class="text-white font-mono text-xs"></span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Monto</span>
+                                <div class="text-right">
+                                    <span id="payment-amount" class="text-amber-400 font-bold"></span>
+                                    <p id="payment-price-breakdown" class="hidden text-xs text-gray-600 mt-0.5"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subir comprobante -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Comprobante de pago</label>
+                        <input type="file" id="payment-receipt-input" accept="image/*" class="w-full text-gray-300 text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:text-white file:bg-amber-700 hover:file:bg-amber-600 file:cursor-pointer bg-[#15161a] border border-[#1e2028] rounded-lg p-1.5">
+                        <p class="text-gray-600 text-xs mt-1.5">Adjunta captura de pantalla de la transacción.</p>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-300 text-sm font-medium mb-2">Subir comprobante de pago</label>
-                    <input type="file" id="payment-receipt-input" accept="image/*" class="w-full text-gray-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-amber-600 hover:file:bg-amber-700">
-                    <p class="text-gray-500 text-xs mt-1">Adjunta captura de pantalla de la transacción</p>
-                </div>
-
-                <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="closePaymentModal()" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">Cancelar</button>
-                    <button type="button" onclick="submitPaymentReceipt()" class="px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700">Enviar Comprobante</button>
+                <div class="flex justify-end gap-3 px-6 py-4 border-t border-[#1e2028]">
+                    <button type="button" onclick="closePaymentModal()" class="px-5 py-2.5 bg-[#1e2028] hover:bg-[#292a34] text-gray-300 rounded-lg text-sm transition-colors">Cancelar</button>
+                    <button type="button" onclick="submitPaymentReceipt()" class="px-5 py-2.5 bg-amber-700 hover:bg-amber-600 text-white rounded-lg text-sm font-semibold transition-colors">Enviar Comprobante</button>
                 </div>
             </div>
         </div>
